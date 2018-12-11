@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+html(lang="mx")
+  head
+    include templates/_blocks/meta
+    include templates/_blocks/icon
+    title Feedback Generator X | Alejandro Leyva
+  body
+    h1.title-main Generador de Retroalimentación X
+    .container
+      .container-information
+        include templates/body/hello
+        include templates/body/feedback
+        include templates/body/phrase
+        include templates/body/goodbye
+        include templates/body/sign
+      include templates/body/message
+    include templates/footer
+    script(src="./js/main.js" async)

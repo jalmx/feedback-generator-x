@@ -1,0 +1,27 @@
+.container-greeting#container-greeting
+  h2.title-container Saludo
+  .option.name-to
+    label(for="name-user") Nombre 
+      input(type="text" id="name-user")
+  form
+    .option.active
+      label(data-input="checkbox")
+        input(type="checkbox", name="greeting" id="greeting" checked  data-input="checkbox") 
+        |  Saludo
+    .option
+      label
+        input(type="radio", name="greeting" id="greeting-random" checked)
+        |  Random
+    .option
+      label
+        input(type="radio", name="greeting" id="greeting-hi")
+        |  Hola
+    .option
+      label
+        input(type="radio", name="greeting" id="greeting-estimado")
+        |  Estimado
+    .option.new-data
+      input(type="radio", name="name" id="greeting-custom")
+      label(for="greeting-custom") Personalizado
+      input(type="text", name="custom" id="greeting-custom")
+      button.button Agregar

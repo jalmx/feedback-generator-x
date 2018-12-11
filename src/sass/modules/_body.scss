@@ -1,0 +1,82 @@
+.title-main,
+.title-container {
+    width: 100%;
+    overflow: hidden;
+    margin: auto;
+    padding: 1rem 0;
+    text-align: center;
+    background: #333;
+    color: white;
+}
+
+.title-container {
+    padding: 1rem 0;
+    font-weight: normal;
+    margin: 1rem 0;
+}
+
+.container {
+    display: flex;
+}
+
+.container-information,
+.container-message {
+    width: 50%;
+    padding: 0 1rem;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+}
+
+[type="text"] {
+    font-size: 1rem;
+}
+
+.name-to {
+    background-color: rgb(190, 187, 187);
+    display: flex;
+    padding: .5rem .3rem;
+    margin-bottom: .5rem;
+    label {
+        margin-right: .3rem;
+    }
+    input {
+        width: 90%;
+    }
+}
+
+.option {
+    padding-bottom: .3rem;
+}
+
+.slider>input {
+    width: 100%;
+}
+
+label {
+    text-transform: capitalize;
+}
+
+.new-data {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    label,
+    [type="radio"] {
+        margin-right: .2rem;
+        white-space: nowrap;
+    }
+    [type="text"] {
+        width: 100%;
+        margin-right: .2rem;
+    }
+}
+
+.active {
+    background: white;
+    padding: .5rem 0;
+    border-radius: 5px;
+}

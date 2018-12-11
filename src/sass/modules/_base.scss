@@ -1,0 +1,36 @@
+*,
+::after,
+::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif;
+    font-size: 16px;
+    background: var(--color-bg);
+    overflow-x: hidden;
+}
+
+body {
+    max-width: 1200px;
+    overflow-x: hidden;
+    margin: auto;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+img {
+    display: block;
+    width: 100%;
+}
+
+$break-contact: 615px;
+$break-medium: 720px;

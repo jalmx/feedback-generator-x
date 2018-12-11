@@ -1,0 +1,33 @@
+.container-goodbye#container-goodbye
+  h2.title-container Despedida
+  .option.active
+    label(data-input="checkbox") 
+      input(type="checkbox", id="goodbye" data-input="checkbox" checked)
+      |  Despedida
+  form(action="#")
+    .option
+      label
+        input(type="radio", name="goodbye" id="goodbye-random" checked)
+        |  Random
+    .option
+      label
+        input(type="radio", name="goodbye")
+        |  Saludos
+    .option
+      label
+        input(type="radio", name="goodbye")
+        |  Saludos cordiales
+    .option
+      label
+        input(type="radio", name="goodbye")
+        |  Caluroso abrazo
+    .option
+      label
+        input(type="radio", name="goodbye")
+        |  Saludos, cualquier duda estoy a tus órdenes
+    .option.new-data
+      label
+        input(type="radio" id="new-goodbye")
+        |  Nueva despedida
+      input(type="text" id="new-goodbye")
+      button.button Agregar
