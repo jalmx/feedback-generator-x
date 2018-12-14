@@ -1,24 +1,7 @@
-.container-phrase#container-phrase
+section.container-phrase#container-phrase
   h2.title-container Frase motivadora
   .option.active
     label(data-input="checkbox")
       input(type="checkbox", name="phrase" id="phrase" data-input="checkbox" checked)
       |  Frase motivadora
-  form
-    .option
-      label
-        input(type="radio", name="phrase" id="phrase-random" checked)
-        |  Random
-    .option
-      label
-        input(type="radio", name="phrase" id="good-luck")
-        |  Buena suerte
-    .option
-      label
-        input(type="radio", name="phrase" id="redaction")
-        |  adelante
-    .option.new-data
-      input(type="radio" id="new-phrase")
-      label(for="new-phrase") Nueva frase
-      input(type="text")
-      button.button Agregar
+  form#form-phrase

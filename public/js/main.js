@@ -9,13 +9,15 @@ var selectionAvailable = require('./lib/section').selectionAvailable;
 
 var checkboxChecked = require('./lib/section').checkboxChecked;
 
-var phrases = require('./lib/phrases');
-
 var build = require('./lib/build-message').buildMessage;
 
 var addMessage = require('./lib/build-message').addMessage;
 
 var readFeed = require('./lib/readFeed');
+
+var local = require('./lib/save-local');
+
+var add = require('./lib/add').add;
 
 var name = document.getElementById('name-user');
 var containerGreeting = document.getElementById('container-greeting');
@@ -24,13 +26,50 @@ var containerMessage = document.getElementById('textarea-message');
 var containerGoodbye = document.getElementById('container-goodbye');
 var containerSign = document.getElementById('container-sign');
 var containerFeedback = document.getElementById('container-feedback');
-var messageGreeting = selectionContainer(containerGreeting, phrases.greetings);
-var messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
-var messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
+var containerResources = document.getElementById('container-resources');
+var formGreeting = document.getElementById('form-greeting');
+var formPhrase = document.getElementById('form-phrase');
+var formGoodbye = document.getElementById('form-goodbye');
+var formResource = document.getElementById('form-resource');
+var saved = local.createAccount();
+var phrases = saved.phrases;
 
 var feeds = require('./lib/build-feedback').createAllFeeds;
 
-containerFeedback.innerHTML += feeds();
+var createView = function createView() {
+  var createSection = require('./lib/build-section');
+
+  createSection({
+    container: formGreeting,
+    name: 'greeting',
+    phrases: phrases.greeting,
+    type: 'radio'
+  });
+  createSection({
+    container: formPhrase,
+    name: 'phrase',
+    phrases: phrases.phrase,
+    type: 'radio'
+  });
+  createSection({
+    container: formGoodbye,
+    name: 'goodbye',
+    phrases: phrases.goodbye,
+    type: 'radio'
+  });
+  createSection({
+    container: formResource,
+    name: 'resource',
+    phrases: phrases.resource,
+    type: 'checkbox'
+  });
+};
+
+createView();
+var messageGreeting = selectionContainer(containerGreeting, phrases.greeting);
+var messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
+var messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
+containerFeedback.innerHTML += feeds(saved.feedbacks);
 var bodyMessage = {
   name: name.value,
   greeting: messageGreeting,
@@ -50,33 +89,56 @@ containerSign.addEventListener('keyup', function (event) {
   addMessage(containerMessage, bodyMessage);
 });
 containerGreeting.addEventListener('click', function (event) {
+  if (event.target.id.endsWith('add')) {
+    event.preventDefault();
+    add(formGreeting);
+  }
+
+  if (event.target.localName === 'span') {
+    //TODO: para eliminar el mensaje
+    var elements = Array.from(containerGreeting.children);
+    elements[elements.length - 1];
+    console.dir(elements[elements.length - 1]);
+  }
+
   var active = true;
 
   if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
     active = selectionAvailable(event.target, containerGreeting);
   }
 
-  bodyMessage.greeting = checkboxChecked(containerGreeting) && active ? selectionContainer(containerGreeting, phrases.greetings) : "";
+  console.log('entre');
+  bodyMessage.greeting = checkboxChecked(containerGreeting) && active ? selectionContainer(containerGreeting, local.loadDataSaved().phrases.greeting) : "";
   addMessage(containerMessage, bodyMessage);
 });
 containerPhrase.addEventListener('click', function (event) {
+  if (event.target.id.endsWith('add')) {
+    event.preventDefault();
+    add(formPhrase);
+  }
+
   var active = true;
 
   if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
     active = selectionAvailable(event.target, containerPhrase);
   }
 
-  bodyMessage.phrase = checkboxChecked(containerPhrase) && active ? selectionContainer(containerPhrase, phrases.phrase) : "";
+  bodyMessage.phrase = checkboxChecked(containerPhrase) && active ? selectionContainer(containerPhrase, local.loadDataSaved().phrases.phrase) : "";
   addMessage(containerMessage, bodyMessage);
 });
 containerGoodbye.addEventListener('click', function (event) {
+  if (event.target.id.endsWith('add')) {
+    event.preventDefault();
+    add(formGoodbye);
+  }
+
   var active = true;
 
   if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
     active = selectionAvailable(event.target, containerGoodbye);
   }
 
-  bodyMessage.goodbye = checkboxChecked(containerGoodbye) && active ? selectionContainer(containerGoodbye, phrases.goodbye) : "";
+  bodyMessage.goodbye = checkboxChecked(containerGoodbye) && active ? selectionContainer(containerGoodbye, local.loadDataSaved().phrases.goodbye) : "";
   addMessage(containerMessage, bodyMessage);
 });
 containerSign.addEventListener('click', function (event) {
@@ -90,12 +152,25 @@ containerSign.addEventListener('click', function (event) {
   addMessage(containerMessage, bodyMessage);
 });
 containerFeedback.addEventListener('click', function (event) {
+  if (event.target.id.endsWith('add')) {
+    event.preventDefault();
+    add(containerPhrase);
+  }
+
   bodyMessage.feedbackOk = readFeed(event, containerFeedback).feedbackOk;
   bodyMessage.feedbackOpportunity = readFeed(event, containerFeedback).feedbackOpportunity;
   addMessage(containerMessage, bodyMessage);
 });
-},{"./lib/build-feedback":3,"./lib/build-message":4,"./lib/phrases":6,"./lib/readFeed":7,"./lib/section":8}],2:[function(require,module,exports){
-module.exports = class feed {
+
+require('./lib/btn').reset();
+
+require('./lib/btn').clear();
+
+require('./lib/btn').copyToClipboard();
+
+require('./lib/btn').saveData();
+},{"./lib/add":3,"./lib/btn":4,"./lib/build-feedback":5,"./lib/build-message":6,"./lib/build-section":7,"./lib/readFeed":11,"./lib/save-local":12,"./lib/section":13}],2:[function(require,module,exports){
+module.exports = class Feed {
 
     constructor(name = '', checked = false, data = {}) {
         this.name = name;
@@ -109,9 +184,91 @@ module.exports = class feed {
 
 }
 },{}],3:[function(require,module,exports){
-const feedbacks = require('./feedback');
+const local = require('./save-local');
+const createSection = require('./build-section');
 
-const createAllFeeds = () => {
+const add = (form) => {
+
+    let savedData = local.loadDataSaved();
+
+    if (form.id.endsWith('feedback')) {
+        console.log('feedback');
+    } else {
+
+        const name = form.id.toString().replace('form-', '');
+        const inputNewMessage = document.getElementById(name + '-new');
+        const newMessage = inputNewMessage.value;
+
+        if (newMessage.trim() === '') {
+            alert('El campo no puede estar vacío!')
+            return;
+        }
+
+        savedData.phrases[name].push(newMessage);
+        local.insertValues(savedData)
+        createSection({
+            container: form,
+            name: name,
+            phrases: savedData.phrases[name],
+            type: name != 'resource' ? 'radio' : 'checkbox'
+        })
+    }
+
+}
+
+module.exports = {
+    add
+}
+},{"./build-section":7,"./save-local":12}],4:[function(require,module,exports){
+const reset = () => {
+    const local = require('./save-local');
+    document.getElementById('reset')
+        .addEventListener('click', e => {
+            e.preventDefault();
+            local.reset();
+            window.location.reload();
+        });
+
+}
+
+const clear = () => {
+    document.getElementById('clear')
+        .addEventListener('click', e => {
+            e.preventDefault();
+            window.location.reload();
+        });
+}
+
+const saveData = () => {
+    document.getElementById('save')
+        .addEventListener('click', e => {
+            e.preventDefault();
+            const textarea = document.getElementById('textarea-message');
+            const saved = document.getElementById('message-saved');
+            let message = saved.innerText;
+
+            saved.innerText = '';
+            saved.innerText += textarea.value + '\n-------------------------\n' + message + "\n";
+        })
+}
+
+const copyToClipboard = () => {
+    const copy = document.getElementById('copy');
+    copy.addEventListener('click', e => {
+        e.preventDefault();
+        const textarea = document.getElementById('textarea-message');
+        textarea.select();
+        document.execCommand('copy');
+    })
+}
+module.exports = {
+    reset,
+    clear,
+    saveData,
+    copyToClipboard
+}
+},{"./save-local":12}],5:[function(require,module,exports){
+const createAllFeeds = (feedbacks) => {
     let feeds = "";
 
     feedbacks.forEach((element) => {
@@ -156,7 +313,7 @@ const setRange = (value) => {
 module.exports = {
     createAllFeeds
 }
-},{"./feedback":5}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 
 const buildMessage = (message = {}) => {
 
@@ -206,7 +363,79 @@ module.exports = {
     buildMessage,
     addMessage
 }
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+const createSection = (values) => {
+
+    const container = values.container;
+    const name = values.name;
+    const phrases = values.phrases;
+    const type = values.type;
+
+    phrases.unshift('ramdom');
+
+    let elements = '';
+
+    phrases.forEach((item, i) => {
+        elements += /*html*/ `
+        <div class="option">
+            <label>
+              <input type="${type}" name="${toIdHTML(name)}" id="${toIdHTML(name) + "-" + toIdHTML(item)}" ${i === 0 ? 'checked' : ''}/> ${item}
+            </label>
+            ${i != 0 ? '<span class="erase">X</span>' : ''}
+        </div>
+        `
+    });
+
+    container.innerHTML = '';
+    container.innerHTML += elements;
+    container.appendChild(createSectionAddNew(name));
+
+    return container;
+}
+
+const createSectionAddNew = (name) => {
+    let div = document.createElement('div');
+    div.classList.add("option", "new-data");
+
+    let label = document.createElement('label');
+    label.setAttribute('for', toIdHTML(name) + "-new");
+    label.innerText = 'Nuevo'
+
+    let a = document.createElement('a');
+    a.classList.add('button');
+    a.id = name + "-add";
+    a.href = "#";
+    a.textContent = "Agregar"
+
+    div.appendChild(label)
+    div.appendChild(createInput('text', name))
+    div.appendChild(a)
+
+    return div;
+}
+
+const createInput = (type, name) => {
+    let input = document.createElement('input');
+    input.type = type;
+    input.name = toIdHTML(name);
+    input.id = toIdHTML(name) + "-new";
+    return input;
+}
+
+/**
+ * Evita que los id salgan con espacios y con letras con acentos
+ * @param {*} text 
+ */
+const toIdHTML = (text) => text.split(" ").join("-")
+    .split(",").join("")
+    .split("á").join("")
+    .split("é").join("")
+    .split("í").join("")
+    .split("ó").join("")
+    .split("ú").join("")
+
+module.exports = createSection;
+},{}],8:[function(require,module,exports){
 let Feed = require('./Feed')
 
 const identify = new Feed('identifica el problema', false, {
@@ -309,8 +538,6 @@ const format = new Feed('formato', false, {
         'Entregas el documento en el formato solicitado.'
     ]
 })
-// falta agregar trabajo limpio y ordenado --> digital
-//Formato solicitado ---> redactar
 
 module.exports = [
     // analyze, //rehacer********
@@ -326,29 +553,45 @@ module.exports = [
     nomenclature,
     format
 ];
-},{"./Feed":2}],6:[function(require,module,exports){
-const greetings = ['Hola', 'Estimado', 'Buenas tardes', 'Buen día', 'Buenos días'];// este array se pasara por parametros
+},{"./Feed":2}],9:[function(require,module,exports){
+module.exports = 'EF0D391237';
+},{}],10:[function(require,module,exports){
+const greeting = ['Hola', 'Estimado', 'Buen día'];
+const greetingTime = ['Buenos días', 'Buenas tardes', 'Buenas noches'];
+// TODO: agregar que verifuqe la hora y me lanze la que deba ir de acuerdo al horario
+
 
 const phrase = [
-    'Haz realizado un excelente trabajo, continia de esta manera', 
-    "Se percibe tu motivación y en ello tu esfuerzo, seguimos trabajando de esta manera.",
+    'Haz realizado un excelente trabajo, continia de esta manera',
     "Se percibe tu motivación y en ello tu esfuerzo, seguimos trabajando de esta manera."
 ];
 
 const goodbye = [
-    'Saludos', 
+    'Saludos',
     "Saludos cordiales",
-     'Un caluroso abrazo',
-     'Saludos, cualquier duda estoy a tus órdenes.',
-     'Saludos, cualquier duda estoy a tus órdenes.'
-    ];
+    'Un caluroso abrazo',
+    'Saludos, cualquier duda estoy a tus órdenes.'
+];
 
-module.exports = {
-    greetings,
-    phrase,
-    goodbye
+const resource = [
+    'Link a sesión síncrona',
+    'La RAE'
+]
+
+const sing = {
+    cargo: '',
+    group: '',
+    sing: ''
 }
-},{}],7:[function(require,module,exports){
+module.exports = {
+    greeting,
+    phrase,
+    goodbye,
+    greetingTime,
+    resource,
+    sing
+}
+},{}],11:[function(require,module,exports){
 const arrayFeeds = require('./feedback')
 const selectionAvailable = require('./section').selectionAvailable;
 
@@ -377,20 +620,67 @@ module.exports = function (event, containerFeedback) {
     })
     return {feedbackOk, feedbackOpportunity}
 }
-},{"./feedback":5,"./section":8}],8:[function(require,module,exports){
+},{"./feedback":8,"./section":13}],12:[function(require,module,exports){
+const key = require('./id')
+
+const createAccount = () => {
+    let values;
+    if (window.localStorage.getItem(key)) {
+        values = loadDataSaved();
+    } else {
+        values = insertValuesDefault();
+    }
+    return values;
+}
+
+const insertValuesDefault = () => {
+    const phrases = require('./phrases');
+    const feedbacks = require('./feedback');
+    const values = JSON.stringify({
+        phrases,
+        feedbacks
+    })
+    window.localStorage.setItem(key, values);
+
+    return { phrases, feedbacks };
+}
+
+const insertValues = data => {
+    const values = JSON.stringify(data)
+    window.localStorage.setItem(key, values);
+}
+const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
+
+const reset = () => {
+    window.localStorage.clear();
+    insertValuesDefault()
+}
+module.exports = {
+    createAccount,
+    loadDataSaved,
+    insertValues,
+    reset
+}
+},{"./feedback":8,"./id":9,"./phrases":10}],13:[function(require,module,exports){
 
 const getSelectRadio = (container = new HTMLElement, phrases = []) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
+    console.log(phrases);
 
     if (options.length > 0) {
 
         if (options[0].checked) return randomPhrase(phrases);
 
-        for (let i = 1; i < phrases.length; i++) {
-            if (i > 0) if (options[i].checked) return phrases[i - 1];
+        for (let i = 1; i < phrases.length + 1; i++) {
+            if (options[i].checked) {
+                console.log(i);
+                console.log(i - 1);
+
+                return phrases[i - 1];
+            }
         }
     }
-    return "";
+    return null;
 }
 
 const getText = (container = new HTMLElement) => {
@@ -399,9 +689,17 @@ const getText = (container = new HTMLElement) => {
 }
 
 const randomPhrase = (phrases = []) => {
-    return phrases[Math.floor(Math.random() * phrases.length)];
+    let i = 0;
+
+    while (i === 0) {
+        i = Math.floor(Math.random() * phrases.length) > 0 ? Math.floor(Math.random() * phrases.length) : 0;
+    }
+    return phrases[i];
 }
 
+/**
+ * Activa y desactiva los elementos en el container
+ */
 const selectionAvailable = (checkbox, container = new HTMLElement) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
     const textareas = [...container.querySelectorAll('textarea')];
@@ -415,23 +713,16 @@ const selectionAvailable = (checkbox, container = new HTMLElement) => {
     textareas.forEach((i) => {
         i.disabled = !checkbox.checked;
     });
-    ranges.forEach((i)=>{
+    ranges.forEach((i) => {
         i.disabled = !checkbox.checked;
     });
     for (let index = 1; index < checkboxChilds.length; index++) {
         checkboxChilds[index].disabled = !checkbox.checked;
     }
-    
+
 
     return checkbox.checked;
 }
-
-const getValueRange = (container = new HTMLElement) => {
-    const range = container.querySelector('[type="range"]')
-    console.log(range.value);
-    //**LLAMAR AL READ FEED E */
-}
-
 /**
  * Obtiene el primer checkbox del container
  */
@@ -444,7 +735,6 @@ module.exports = {
     getSelectRadio,
     selectionAvailable,
     checkboxChecked,
-    getText,
-    getValueRange
+    getText
 }
 },{}]},{},[1])

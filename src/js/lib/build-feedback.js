@@ -1,6 +1,4 @@
-const feedbacks = require('./feedback');
-
-const createAllFeeds = () => {
+const createAllFeeds = (feedbacks) => {
     let feeds = "";
 
     feedbacks.forEach((element) => {

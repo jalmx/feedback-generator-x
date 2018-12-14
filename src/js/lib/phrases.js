@@ -1,21 +1,35 @@
-const greetings = ['Hola', 'Estimado', 'Buenas tardes', 'Buen día', 'Buenos días'];// este array se pasara por parametros
+const greeting = ['Hola', 'Estimado', 'Buen día'];
+const greetingTime = ['Buenos días', 'Buenas tardes', 'Buenas noches'];
+// TODO: agregar que verifuqe la hora y me lanze la que deba ir de acuerdo al horario
+
 
 const phrase = [
-    'Haz realizado un excelente trabajo, continia de esta manera', 
-    "Se percibe tu motivación y en ello tu esfuerzo, seguimos trabajando de esta manera.",
+    'Haz realizado un excelente trabajo, continia de esta manera',
     "Se percibe tu motivación y en ello tu esfuerzo, seguimos trabajando de esta manera."
 ];
 
 const goodbye = [
-    'Saludos', 
+    'Saludos',
     "Saludos cordiales",
-     'Un caluroso abrazo',
-     'Saludos, cualquier duda estoy a tus órdenes.',
-     'Saludos, cualquier duda estoy a tus órdenes.'
-    ];
+    'Un caluroso abrazo',
+    'Saludos, cualquier duda estoy a tus órdenes.'
+];
 
+const resource = [
+    'Link a sesión síncrona',
+    'La RAE'
+]
+
+const sing = {
+    cargo: '',
+    group: '',
+    sing: ''
+}
 module.exports = {
-    greetings,
+    greeting,
     phrase,
-    goodbye
+    goodbye,
+    greetingTime,
+    resource,
+    sing
 }

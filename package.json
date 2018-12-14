@@ -29,6 +29,8 @@
     "gulp-robots": "^2.0.4",
     "gulp-sass": "^4.0.2",
     "gulp-sitemap": "^6.1.0",
+    "gulp-uglify": "^3.0.1",
+    "pump": "^3.0.0",
     "vinyl-source-stream": "^2.0.0"
   }
 }

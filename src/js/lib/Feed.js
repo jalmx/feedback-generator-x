@@ -1,4 +1,4 @@
-module.exports = class feed {
+module.exports = class Feed {
 
     constructor(name = '', checked = false, data = {}) {
         this.name = name;

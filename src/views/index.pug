@@ -5,14 +5,18 @@ html(lang="mx")
     include templates/_blocks/icon
     title Feedback Generator X | Alejandro Leyva
   body
-    h1.title-main Generador de Retroalimentación X
-    .container
-      .container-information
-        include templates/body/hello
-        include templates/body/feedback
-        include templates/body/phrase
-        include templates/body/goodbye
-        include templates/body/sign
-      include templates/body/message
-    include templates/footer
+    main.main
+      h1.title-main Generador de Retroalimentación X
+      .container
+        section.container-information
+          include templates/body/hello
+          include templates/body/feedback
+          include templates/body/resources
+          include templates/body/phrase
+          include templates/body/goodbye
+          include templates/body/sign
+        seection.container-message
+          include templates/body/message
+          include templates/body/saved-message
+      include templates/footer
     script(src="./js/main.js" async)

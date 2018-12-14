@@ -1,11 +1,10 @@
 .title-main,
 .title-container {
     width: 100%;
-    overflow: hidden;
     margin: auto;
     padding: 1rem 0;
     text-align: center;
-    background: #333;
+    background: var(--color-black);
     color: white;
 }
 
@@ -13,22 +12,35 @@
     padding: 1rem 0;
     font-weight: normal;
     margin: 1rem 0;
+    text-transform: capitalize;
 }
 
 .container {
     display: flex;
+    @media screen and (max-width: $break-medium) {
+        flex-direction: column;
+    }
 }
 
 .container-information,
 .container-message {
+    height: 100vh;
+    overflow: auto;
     width: 50%;
     padding: 0 1rem;
+    @media screen and (max-width: $break-medium) {
+        height: auto;
+        overflow: scroll;
+        width: 100%;
+    }
 }
 
 textarea {
     display: block;
     width: 100%;
     font-size: 1rem;
+    resize: none;
+    overflow-y: auto;
 }
 
 [type="text"] {
@@ -50,6 +62,23 @@ textarea {
 
 .option {
     padding-bottom: .3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    .erase {
+        display: none;
+    }
+    &:hover .erase {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 .5rem;
+        background: tomato;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+    }
 }
 
 .slider>input {
@@ -58,6 +87,7 @@ textarea {
 
 label {
     text-transform: capitalize;
+    white-space: nowrap;
 }
 
 .new-data {
@@ -79,4 +109,9 @@ label {
     background: white;
     padding: .5rem 0;
     border-radius: 5px;
+    margin: 0 0 .5rem 0;
+}
+
+.message-saved {
+    font-size: 1.1rem;
 }

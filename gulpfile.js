@@ -10,7 +10,8 @@ const humans = require('gulp-humans');
 const robots = require('gulp-robots');
 const browserify = require('gulp-browserify');
 const babel = require('gulp-babel');
-
+const uglify = require('gulp-uglify');
+const pump = require('pump');
 
 const postCSSPluings = [
     cssnano({

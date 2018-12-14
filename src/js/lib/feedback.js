@@ -100,8 +100,6 @@ const format = new Feed('formato', false, {
         'Entregas el documento en el formato solicitado.'
     ]
 })
-// falta agregar trabajo limpio y ordenado --> digital
-//Formato solicitado ---> redactar
 
 module.exports = [
     // analyze, //rehacer********
