@@ -61,7 +61,7 @@ gulp.task('sitemap', () => {
         read: false
     })
         .pipe(sitemap({
-            siteUrl: 'https://www.alejandro-leyva.com/feedback-generator-x' // remplazar por tu dominio
+            siteUrl: 'http://www.alejandro-leyva.com/feedback-generator' // remplazar por tu dominio
         }))
         .pipe(gulp.dest('./public'))
 })
