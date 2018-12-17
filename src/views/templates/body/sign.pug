@@ -1,15 +1,7 @@
 section.container-signing#container-sign
   h2.title-container Firma
-  .option.new-data.active
-    input(type="checkbox" id="cargo", checked)
-    label(for="new-phrase")  Cargo
-    input(type="text")
-  .option.new-data.active
-    input(type="checkbox" id="group", checked)
-    label(for="new-phrase")  Grupo
-    input(type="text")
-  .option.active
+  form#container-sign.option.active
     label(data-input="checkbox")
       input(type="checkbox", name="sign" id="sign" checked data-input="checkbox")
       |  Firma
-  textarea(name="", cols="30", rows="10" placeholder="Agregar firma")
+  #form-sign

@@ -1,5 +1,5 @@
 const local = require('./save-local');
-const createSection = require('./build-section');
+const createSection = require('./build-section').createSection;
 
 const add = (form) => {
 

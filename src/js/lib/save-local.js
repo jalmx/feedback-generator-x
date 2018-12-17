@@ -28,6 +28,9 @@ const insertValues = data => {
 }
 const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
 
+const remove = () => {
+
+}
 const reset = () => {
     window.localStorage.clear();
     insertValuesDefault()
@@ -36,5 +39,6 @@ module.exports = {
     createAccount,
     loadDataSaved,
     insertValues,
-    reset
+    reset,
+    remove
 }

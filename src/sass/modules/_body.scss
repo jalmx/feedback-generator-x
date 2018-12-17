@@ -71,11 +71,12 @@ textarea {
     &:hover .erase {
         display: inline-block;
         position: absolute;
-        top: 0;
+        top: 50%;
         right: 0;
+        transform: translateY(-50%);
         padding: 0 .5rem;
         background: tomato;
-        border-radius: 6px;
+        border-radius: 7px;
         color: white;
         cursor: pointer;
     }

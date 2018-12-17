@@ -1,27 +1,34 @@
-
 const getSelectRadio = (container = new HTMLElement, phrases = []) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
-    console.log(phrases);
 
     if (options.length > 0) {
 
         if (options[0].checked) return randomPhrase(phrases);
 
         for (let i = 1; i < phrases.length + 1; i++) {
-            if (options[i].checked) {
-                console.log(i);
-                console.log(i - 1);
-
-                return phrases[i - 1];
-            }
+            if (options[i].checked) return phrases[i - 1];
         }
     }
     return null;
 }
 
-const getText = (container = new HTMLElement) => {
-    const textArea = container.querySelector('textarea');
-    return textArea.value;
+/**
+ * obtiene lo seleccionado desde la UI
+ */
+const getSign = (container = new HTMLElement, phrases) => {
+
+    const labels = [...container.querySelectorAll('label')];
+
+    let sign = '';
+
+    labels.filter(
+        label => {
+            sign += label.dataset.sign === "true" && label.previousElementSibling.previousElementSibling.checked ?
+                label.textContent + "\n" : '';
+        }
+    )
+
+    return sign;
 }
 
 const randomPhrase = (phrases = []) => {
@@ -38,7 +45,7 @@ const randomPhrase = (phrases = []) => {
  */
 const selectionAvailable = (checkbox, container = new HTMLElement) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
-    const textareas = [...container.querySelectorAll('textarea')];
+    const text = [...container.querySelectorAll('[type="text"]')];
     const checkboxChilds = [...container.querySelectorAll('[type="checkbox"]')];
     const ranges = [...container.querySelectorAll('[type="range"]')];
 
@@ -46,7 +53,7 @@ const selectionAvailable = (checkbox, container = new HTMLElement) => {
         i.disabled = !checkbox.checked;
     });
 
-    textareas.forEach((i) => {
+    text.forEach((i) => {
         i.disabled = !checkbox.checked;
     });
     ranges.forEach((i) => {
@@ -71,5 +78,5 @@ module.exports = {
     getSelectRadio,
     selectionAvailable,
     checkboxChecked,
-    getText
+    getSign
 }

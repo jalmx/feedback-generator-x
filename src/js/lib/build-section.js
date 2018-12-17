@@ -27,6 +27,39 @@ const createSection = (values) => {
     return container;
 }
 
+const createFormSign = values => {
+    const container = values.container;
+    const name = values.name;
+    const phrases = values.phrases;
+    const type = values.type;
+    let html = '';
+
+    html += createOption('Nombre', type, phrases.name, name);
+    html += createOption('Cargo', type, phrases.cargo, name);
+    html += createOption('Grupo', type, phrases.group, name);
+    container.innerHTML = html;
+    return container;
+}
+
+const createOption = (name, type, data, nameForm) => {
+    return data === '' ?
+        /*html*/ `
+<div class="option new-data active">
+    <input type="${type}" id="${nameForm}-${name}" checked/>
+    <label for="${nameForm}-${name}">${name}</label>
+    <input type="text" id="${name}" placeholder="${name}"/>
+</div>
+        ` :
+/*html*/ `
+<div class="option new-data active">
+    <input type="${type}" id="${nameForm}-${name}" checked/>
+    <label for="${nameForm}-${name}">${name}</label>
+    <label for="${nameForm}-${name}" data-sign="true">${data}</label>
+    <span class="erase">X</span>
+</div>
+        `;
+}
+
 const createSectionAddNew = (name) => {
     let div = document.createElement('div');
     div.classList.add("option", "new-data");
@@ -68,4 +101,4 @@ const toIdHTML = (text) => text.split(" ").join("-")
     .split("ó").join("")
     .split("ú").join("")
 
-module.exports = createSection;
+module.exports = { createSection, createFormSign };

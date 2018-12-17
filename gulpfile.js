@@ -61,7 +61,7 @@ gulp.task('sitemap', () => {
         read: false
     })
         .pipe(sitemap({
-            siteUrl: 'http://www.alejandro-leyva.com/feedback-generator' // remplazar por tu dominio
+            siteUrl: 'https://www.alejandro-leyva.com/feedback-generator-x/' // remplazar por tu dominio
         }))
         .pipe(gulp.dest('./public'))
 })
@@ -124,3 +124,5 @@ gulp.task('default', ['views', 'sass', 'js'], () => {
 })
 
 gulp.task('build', ['sass', 'views', 'js', 'cache', 'robots', 'humans', 'sitemap']);
+
+// TODO: minificar html y js

@@ -3,7 +3,7 @@
 
 var selectionContainer = require('./lib/section').getSelectRadio;
 
-var getText = require('./lib/section').getText;
+var getSign = require('./lib/section').getSign;
 
 var selectionAvailable = require('./lib/section').selectionAvailable;
 
@@ -25,19 +25,23 @@ var containerPhrase = document.getElementById('container-phrase');
 var containerMessage = document.getElementById('textarea-message');
 var containerGoodbye = document.getElementById('container-goodbye');
 var containerSign = document.getElementById('container-sign');
-var containerFeedback = document.getElementById('container-feedback');
+var containerFeedback = document.getElementById('container-feedback'); // TODO: crear el codigo para los recursos
+
 var containerResources = document.getElementById('container-resources');
 var formGreeting = document.getElementById('form-greeting');
 var formPhrase = document.getElementById('form-phrase');
 var formGoodbye = document.getElementById('form-goodbye');
 var formResource = document.getElementById('form-resource');
+var formSign = document.getElementById('form-sign');
 var saved = local.createAccount();
 var phrases = saved.phrases;
 
 var feeds = require('./lib/build-feedback').createAllFeeds;
 
 var createView = function createView() {
-  var createSection = require('./lib/build-section');
+  var createSection = require('./lib/build-section').createSection;
+
+  var createFormSign = require('./lib/build-section').createFormSign;
 
   createSection({
     container: formGreeting,
@@ -63,12 +67,19 @@ var createView = function createView() {
     phrases: phrases.resource,
     type: 'checkbox'
   });
+  createFormSign({
+    container: formSign,
+    name: 'sign',
+    'phrases': phrases.sign,
+    type: 'checkbox'
+  });
 };
 
 createView();
 var messageGreeting = selectionContainer(containerGreeting, phrases.greeting);
 var messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 var messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
+var messageSign = getSign(containerSign, phrases.sign);
 containerFeedback.innerHTML += feeds(saved.feedbacks);
 var bodyMessage = {
   name: name.value,
@@ -77,7 +88,7 @@ var bodyMessage = {
   feedbackOk: [],
   feedbackOpportunity: [],
   goodbye: messageGoodbye,
-  sign: ""
+  sign: messageSign
 };
 containerMessage.value = build(bodyMessage);
 name.addEventListener('keyup', function (event) {
@@ -148,7 +159,7 @@ containerSign.addEventListener('click', function (event) {
     active = selectionAvailable(event.target, containerSign);
   }
 
-  bodyMessage.sign = checkboxChecked(containerSign) && active ? getText(containerSign, phrases.sign) : "";
+  bodyMessage.sign = checkboxChecked(containerSign) && active ? getSign(containerSign, phrases.sign) : "";
   addMessage(containerMessage, bodyMessage);
 });
 containerFeedback.addEventListener('click', function (event) {
@@ -185,7 +196,7 @@ module.exports = class Feed {
 }
 },{}],3:[function(require,module,exports){
 const local = require('./save-local');
-const createSection = require('./build-section');
+const createSection = require('./build-section').createSection;
 
 const add = (form) => {
 
@@ -393,6 +404,39 @@ const createSection = (values) => {
     return container;
 }
 
+const createFormSign = values => {
+    const container = values.container;
+    const name = values.name;
+    const phrases = values.phrases;
+    const type = values.type;
+    let html = '';
+
+    html += createOption('Nombre', type, phrases.name, name);
+    html += createOption('Cargo', type, phrases.cargo, name);
+    html += createOption('Grupo', type, phrases.group, name);
+    container.innerHTML = html;
+    return container;
+}
+
+const createOption = (name, type, data, nameForm) => {
+    return data === '' ?
+        /*html*/ `
+<div class="option new-data active">
+    <input type="${type}" id="${nameForm}-${name}" checked/>
+    <label for="${nameForm}-${name}">${name}</label>
+    <input type="text" id="${name}" placeholder="${name}"/>
+</div>
+        ` :
+/*html*/ `
+<div class="option new-data active">
+    <input type="${type}" id="${nameForm}-${name}" checked/>
+    <label for="${nameForm}-${name}">${name}</label>
+    <label for="${nameForm}-${name}" data-sign="true">${data}</label>
+    <span class="erase">X</span>
+</div>
+        `;
+}
+
 const createSectionAddNew = (name) => {
     let div = document.createElement('div');
     div.classList.add("option", "new-data");
@@ -434,7 +478,7 @@ const toIdHTML = (text) => text.split(" ").join("-")
     .split("ó").join("")
     .split("ú").join("")
 
-module.exports = createSection;
+module.exports = { createSection, createFormSign };
 },{}],8:[function(require,module,exports){
 let Feed = require('./Feed')
 
@@ -578,10 +622,10 @@ const resource = [
     'La RAE'
 ]
 
-const sing = {
-    cargo: '',
-    group: '',
-    sing: ''
+const sign = {
+    cargo: 'Facilitador',
+    group: 'M18-G11',
+    name: 'Alejandro Leyva'
 }
 module.exports = {
     greeting,
@@ -589,7 +633,7 @@ module.exports = {
     goodbye,
     greetingTime,
     resource,
-    sing
+    sign
 }
 },{}],11:[function(require,module,exports){
 const arrayFeeds = require('./feedback')
@@ -651,6 +695,9 @@ const insertValues = data => {
 }
 const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
 
+const remove = () => {
+
+}
 const reset = () => {
     window.localStorage.clear();
     insertValuesDefault()
@@ -659,33 +706,41 @@ module.exports = {
     createAccount,
     loadDataSaved,
     insertValues,
-    reset
+    reset,
+    remove
 }
 },{"./feedback":8,"./id":9,"./phrases":10}],13:[function(require,module,exports){
-
 const getSelectRadio = (container = new HTMLElement, phrases = []) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
-    console.log(phrases);
 
     if (options.length > 0) {
 
         if (options[0].checked) return randomPhrase(phrases);
 
         for (let i = 1; i < phrases.length + 1; i++) {
-            if (options[i].checked) {
-                console.log(i);
-                console.log(i - 1);
-
-                return phrases[i - 1];
-            }
+            if (options[i].checked) return phrases[i - 1];
         }
     }
     return null;
 }
 
-const getText = (container = new HTMLElement) => {
-    const textArea = container.querySelector('textarea');
-    return textArea.value;
+/**
+ * obtiene lo seleccionado desde la UI
+ */
+const getSign = (container = new HTMLElement, phrases) => {
+
+    const labels = [...container.querySelectorAll('label')];
+
+    let sign = '';
+
+    labels.filter(
+        label => {
+            sign += label.dataset.sign === "true" && label.previousElementSibling.previousElementSibling.checked ?
+                label.textContent + "\n" : '';
+        }
+    )
+
+    return sign;
 }
 
 const randomPhrase = (phrases = []) => {
@@ -702,7 +757,7 @@ const randomPhrase = (phrases = []) => {
  */
 const selectionAvailable = (checkbox, container = new HTMLElement) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
-    const textareas = [...container.querySelectorAll('textarea')];
+    const text = [...container.querySelectorAll('[type="text"]')];
     const checkboxChilds = [...container.querySelectorAll('[type="checkbox"]')];
     const ranges = [...container.querySelectorAll('[type="range"]')];
 
@@ -710,7 +765,7 @@ const selectionAvailable = (checkbox, container = new HTMLElement) => {
         i.disabled = !checkbox.checked;
     });
 
-    textareas.forEach((i) => {
+    text.forEach((i) => {
         i.disabled = !checkbox.checked;
     });
     ranges.forEach((i) => {
@@ -735,6 +790,6 @@ module.exports = {
     getSelectRadio,
     selectionAvailable,
     checkboxChecked,
-    getText
+    getSign
 }
 },{}]},{},[1])

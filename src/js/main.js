@@ -1,5 +1,5 @@
 const selectionContainer = require('./lib/section').getSelectRadio;
-const getText = require('./lib/section').getText;
+const getSign = require('./lib/section').getSign;
 const selectionAvailable = require('./lib/section').selectionAvailable;
 const checkboxChecked = require('./lib/section').checkboxChecked;
 const build = require('./lib/build-message').buildMessage;
@@ -15,11 +15,13 @@ const containerMessage = document.getElementById('textarea-message');
 const containerGoodbye = document.getElementById('container-goodbye');
 const containerSign = document.getElementById('container-sign');
 const containerFeedback = document.getElementById('container-feedback');
+// TODO: crear el codigo para los recursos
 const containerResources = document.getElementById('container-resources');
 const formGreeting = document.getElementById('form-greeting');
 const formPhrase = document.getElementById('form-phrase');
 const formGoodbye = document.getElementById('form-goodbye');
 const formResource = document.getElementById('form-resource');
+const formSign = document.getElementById('form-sign');
 
 
 const saved = local.createAccount();
@@ -27,18 +29,20 @@ const phrases = saved.phrases;
 const feeds = require('./lib/build-feedback').createAllFeeds
 
 const createView = () => {
-    const createSection = require('./lib/build-section')
+    const createSection = require('./lib/build-section').createSection;
+    const createFormSign = require('./lib/build-section').createFormSign;
     createSection({ container: formGreeting, name: 'greeting', phrases: phrases.greeting, type: 'radio' });
     createSection({ container: formPhrase, name: 'phrase', phrases: phrases.phrase, type: 'radio' });
     createSection({ container: formGoodbye, name: 'goodbye', phrases: phrases.goodbye, type: 'radio' });
     createSection({ container: formResource, name: 'resource', phrases: phrases.resource, type: 'checkbox' });
+    createFormSign({ container: formSign, name: 'sign', 'phrases': phrases.sign, type: 'checkbox' });
 }
 createView();
 
 let messageGreeting = selectionContainer(containerGreeting, phrases.greeting);
 let messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 let messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
-
+let messageSign = getSign(containerSign, phrases.sign)
 containerFeedback.innerHTML += feeds(saved.feedbacks)
 
 let bodyMessage = {
@@ -48,7 +52,7 @@ let bodyMessage = {
     feedbackOk: [],
     feedbackOpportunity: [],
     goodbye: messageGoodbye,
-    sign: ""
+    sign: messageSign
 };
 containerMessage.value = build(bodyMessage);
 
@@ -91,7 +95,6 @@ containerGreeting.addEventListener('click', (event) => {
 
 containerPhrase.addEventListener('click', (event) => {
 
-
     if ((event.target.id).endsWith('add')) {
         event.preventDefault()
         add(formPhrase)
@@ -131,7 +134,7 @@ containerSign.addEventListener('click', (event) => {
         active = selectionAvailable(event.target, containerSign);
     }
     bodyMessage.sign = checkboxChecked(containerSign) && active ?
-        getText(containerSign, phrases.sign) : "";
+        getSign(containerSign, phrases.sign) : "";
     addMessage(containerMessage, bodyMessage);
 });
 

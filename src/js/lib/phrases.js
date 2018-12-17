@@ -20,10 +20,10 @@ const resource = [
     'La RAE'
 ]
 
-const sing = {
-    cargo: '',
-    group: '',
-    sing: ''
+const sign = {
+    cargo: 'Facilitador',
+    group: 'M18-G11',
+    name: 'Alejandro Leyva'
 }
 module.exports = {
     greeting,
@@ -31,5 +31,5 @@ module.exports = {
     goodbye,
     greetingTime,
     resource,
-    sing
+    sign
 }
