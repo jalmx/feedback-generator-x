@@ -21,9 +21,9 @@ const resource = [
 ]
 
 const sign = {
-    cargo: 'Facilitador',
-    group: 'M18-G11',
-    name: 'Alejandro Leyva'
+    cargo: '',
+    grupo: '',
+    nombre: ''
 }
 module.exports = {
     greeting,

@@ -34,9 +34,9 @@ const createFormSign = values => {
     const type = values.type;
     let html = '';
 
-    html += createOption('Nombre', type, phrases.name, name);
+    html += createOption('Nombre', type, phrases.nombre, name);
     html += createOption('Cargo', type, phrases.cargo, name);
-    html += createOption('Grupo', type, phrases.group, name);
+    html += createOption('Grupo', type, phrases.grupo, name);
     container.innerHTML = html;
     return container;
 }
@@ -47,15 +47,16 @@ const createOption = (name, type, data, nameForm) => {
 <div class="option new-data active">
     <input type="${type}" id="${nameForm}-${name}" checked/>
     <label for="${nameForm}-${name}">${name}</label>
-    <input type="text" id="${name}" placeholder="${name}"/>
+    <input type="text" id="${name}-new" placeholder="${name}" />
+    <span class="button" id="${name}-add" >Agregar<span>
 </div>
         ` :
 /*html*/ `
 <div class="option new-data active">
     <input type="${type}" id="${nameForm}-${name}" checked/>
     <label for="${nameForm}-${name}">${name}</label>
-    <label for="${nameForm}-${name}" data-sign="true">${data}</label>
-    <span class="erase">X</span>
+    <label for="${nameForm}-${name}" data-sign="${name}" data-option="true">${data}</label>
+    <span class="erase" id="erase">X</span>
 </div>
         `;
 }

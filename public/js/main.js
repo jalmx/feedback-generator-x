@@ -165,9 +165,13 @@ containerGoodbye.addEventListener('click', function (event) {
   addMessage(containerMessage, bodyMessage);
 });
 containerSign.addEventListener('click', function (event) {
-  if (event.target.localName === 'span') {
-    var element = event.target.parentElement.children[0].textContent.trim();
-    local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+  if (event.target.id.endsWith('add')) {
+    event.preventDefault();
+    add(formSign, event.target.id.toString().replace('-add', ''));
+  }
+
+  if (event.target.id === 'erase') {
+    local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), event.target.parentElement.children[2].dataset.sign.toString().toLowerCase());
     createView();
   }
 
@@ -216,17 +220,17 @@ module.exports = class Feed {
 },{}],3:[function(require,module,exports){
 const local = require('./save-local');
 const createSection = require('./build-section').createSection;
+const createFormSign = require('./build-section').createFormSign;
 
-const add = (form) => {
-
+const add = (form, elementName) => {
     let savedData = local.loadDataSaved();
 
     if (form.id.endsWith('feedback')) {
         console.log('feedback');
     } else {
-
         const name = form.id.toString().replace('form-', '');
-        const inputNewMessage = document.getElementById(name + '-new');
+        const inputNewMessage = document.getElementById(name + '-new') ||
+            document.getElementById(elementName + '-new');
         const newMessage = inputNewMessage.value;
 
         if (newMessage.trim() === '') {
@@ -234,16 +238,27 @@ const add = (form) => {
             return;
         }
 
-        savedData.phrases[name].push(newMessage);
-        local.insertValues(savedData)
-        createSection({
-            container: form,
-            name: name,
-            phrases: savedData.phrases[name],
-            type: name != 'resource' ? 'radio' : 'checkbox'
-        })
-    }
+        if (name === 'sign') {
+            savedData.phrases[name][elementName.toLowerCase()] = newMessage;
+            local.insertValues(savedData)
+            createFormSign({
+                container: form,
+                name: name,
+                phrases: savedData.phrases[name],
+                type: 'checkbox'
+            })
+        } else {
+            savedData.phrases[name].push(newMessage);
+            local.insertValues(savedData)
+            createSection({
+                container: form,
+                name: name,
+                phrases: savedData.phrases[name],
+                type: name != 'resource' ? 'radio' : 'checkbox'
+            })
+        }
 
+    }
 }
 
 module.exports = {
@@ -430,9 +445,9 @@ const createFormSign = values => {
     const type = values.type;
     let html = '';
 
-    html += createOption('Nombre', type, phrases.name, name);
+    html += createOption('Nombre', type, phrases.nombre, name);
     html += createOption('Cargo', type, phrases.cargo, name);
-    html += createOption('Grupo', type, phrases.group, name);
+    html += createOption('Grupo', type, phrases.grupo, name);
     container.innerHTML = html;
     return container;
 }
@@ -443,15 +458,16 @@ const createOption = (name, type, data, nameForm) => {
 <div class="option new-data active">
     <input type="${type}" id="${nameForm}-${name}" checked/>
     <label for="${nameForm}-${name}">${name}</label>
-    <input type="text" id="${name}" placeholder="${name}"/>
+    <input type="text" id="${name}-new" placeholder="${name}" />
+    <span class="button" id="${name}-add" >Agregar<span>
 </div>
         ` :
 /*html*/ `
 <div class="option new-data active">
     <input type="${type}" id="${nameForm}-${name}" checked/>
     <label for="${nameForm}-${name}">${name}</label>
-    <label for="${nameForm}-${name}" data-sign="true">${data}</label>
-    <span class="erase">X</span>
+    <label for="${nameForm}-${name}" data-sign="${name}" data-option="true">${data}</label>
+    <span class="erase" id="erase">X</span>
 </div>
         `;
 }
@@ -642,9 +658,9 @@ const resource = [
 ]
 
 const sign = {
-    cargo: 'Facilitador',
-    group: 'M18-G11',
-    name: 'Alejandro Leyva'
+    cargo: '',
+    grupo: '',
+    nombre: ''
 }
 module.exports = {
     greeting,
@@ -715,17 +731,20 @@ const insertValues = data => {
 const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
 
 const remove = (namePhrase, element) => {
+    let data = loadDataSaved();
 
-    if (namePhrase != 'feedback') {
-        let data = loadDataSaved();
+    if (namePhrase === 'feedback') {
+        // TODO: para feedback
+    } else if (namePhrase === 'sign') {
+        data.phrases.sign[element] = '';
+    } else {
+        //para todos los casos restantes
         const index = data.phrases[namePhrase].indexOf(element)
         if (index >= 0) {
             data.phrases[namePhrase].splice(index, 1);
-            insertValues(data);
         }
-    } else {
-        //TODO: en caso que sea feedback
     }
+    insertValues(data);
 }
 const reset = () => {
     window.localStorage.clear();
@@ -764,7 +783,7 @@ const getSign = (container = new HTMLElement, phrases) => {
 
     labels.filter(
         label => {
-            sign += label.dataset.sign === "true" && label.previousElementSibling.previousElementSibling.checked ?
+            sign += label.dataset.option === "true" && label.previousElementSibling.previousElementSibling.checked ?
                 label.textContent + "\n" : '';
         }
     )

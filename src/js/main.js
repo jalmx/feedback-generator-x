@@ -138,9 +138,16 @@ containerGoodbye.addEventListener('click', (event) => {
 
 containerSign.addEventListener('click', (event) => {
 
-    if (event.target.localName === 'span') {
-        const element = event.target.parentElement.children[0].textContent.trim();
-        local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+    if ((event.target.id).endsWith('add')) {
+        event.preventDefault();
+        add(formSign, event.target.id.toString().replace('-add', ''))
+    }
+
+    if (event.target.id === 'erase') {
+        local.remove(
+            event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(),
+            event.target.parentElement.children[2].dataset.sign.toString().toLowerCase());
+
         createView();
     }
     let active = true;

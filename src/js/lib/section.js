@@ -23,7 +23,7 @@ const getSign = (container = new HTMLElement, phrases) => {
 
     labels.filter(
         label => {
-            sign += label.dataset.sign === "true" && label.previousElementSibling.previousElementSibling.checked ?
+            sign += label.dataset.option === "true" && label.previousElementSibling.previousElementSibling.checked ?
                 label.textContent + "\n" : '';
         }
     )

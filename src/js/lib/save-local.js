@@ -29,17 +29,20 @@ const insertValues = data => {
 const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
 
 const remove = (namePhrase, element) => {
+    let data = loadDataSaved();
 
-    if (namePhrase != 'feedback') {
-        let data = loadDataSaved();
+    if (namePhrase === 'feedback') {
+        // TODO: para feedback
+    } else if (namePhrase === 'sign') {
+        data.phrases.sign[element] = '';
+    } else {
+        //para todos los casos restantes
         const index = data.phrases[namePhrase].indexOf(element)
         if (index >= 0) {
             data.phrases[namePhrase].splice(index, 1);
-            insertValues(data);
         }
-    } else {
-        //TODO: en caso que sea feedback
     }
+    insertValues(data);
 }
 const reset = () => {
     window.localStorage.clear();
