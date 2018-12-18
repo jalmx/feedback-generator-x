@@ -23,28 +23,30 @@ const formGoodbye = document.getElementById('form-goodbye');
 const formResource = document.getElementById('form-resource');
 const formSign = document.getElementById('form-sign');
 
-
-const saved = local.createAccount();
-const phrases = saved.phrases;
-const feeds = require('./lib/build-feedback').createAllFeeds
+local.createAccount();
 
 const createView = () => {
     const createSection = require('./lib/build-section').createSection;
     const createFormSign = require('./lib/build-section').createFormSign;
+    const phrases = local.loadDataSaved().phrases;
     createSection({ container: formGreeting, name: 'greeting', phrases: phrases.greeting, type: 'radio' });
     createSection({ container: formPhrase, name: 'phrase', phrases: phrases.phrase, type: 'radio' });
     createSection({ container: formGoodbye, name: 'goodbye', phrases: phrases.goodbye, type: 'radio' });
     createSection({ container: formResource, name: 'resource', phrases: phrases.resource, type: 'checkbox' });
     createFormSign({ container: formSign, name: 'sign', 'phrases': phrases.sign, type: 'checkbox' });
+
 }
 createView();
+
+let phrases = local.loadDataSaved().phrases;
 
 let messageGreeting = selectionContainer(containerGreeting, phrases.greeting);
 let messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 let messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
 let messageSign = getSign(containerSign, phrases.sign)
-containerFeedback.innerHTML += feeds(saved.feedbacks)
 
+const feeds = require('./lib/build-feedback').createAllFeeds
+containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks)
 let bodyMessage = {
     name: name.value,
     greeting: messageGreeting,
@@ -74,21 +76,17 @@ containerGreeting.addEventListener('click', (event) => {
     }
 
     if (event.target.localName === 'span') {
-        //TODO: para eliminar el mensaje
-        let elements = Array.from(containerGreeting.children);
-
-        elements[elements.length - 1]
-        console.dir(elements[elements.length - 1]);
-
+        const element = event.target.parentElement.children[0].textContent.trim();
+        local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+        createView();
     }
 
     let active = true;
     if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
         active = selectionAvailable(event.target, containerGreeting);
     }
-    console.log('entre');
 
-    bodyMessage.greeting = checkboxChecked(containerGreeting) && active ? selectionContainer(containerGreeting, local.loadDataSaved().phrases.greeting) : "";
+    bodyMessage.greeting = checkboxChecked(containerGreeting) && active ? selectionContainer(containerGreeting, local.loadDataSaved().phrases.greeting) : '';
     addMessage(containerMessage, bodyMessage);
 
 });
@@ -100,6 +98,11 @@ containerPhrase.addEventListener('click', (event) => {
         add(formPhrase)
     }
 
+    if (event.target.localName === 'span') {
+        const element = event.target.parentElement.children[0].textContent.trim();
+        local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+        createView();
+    }
     let active = true;
     if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
         active = selectionAvailable(event.target, containerPhrase);
@@ -117,6 +120,11 @@ containerGoodbye.addEventListener('click', (event) => {
         add(formGoodbye)
     }
 
+    if (event.target.localName === 'span') {
+        const element = event.target.parentElement.children[0].textContent.trim();
+        local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+        createView();
+    }
     let active = true;
     if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
         active = selectionAvailable(event.target, containerGoodbye);
@@ -129,6 +137,12 @@ containerGoodbye.addEventListener('click', (event) => {
 });
 
 containerSign.addEventListener('click', (event) => {
+
+    if (event.target.localName === 'span') {
+        const element = event.target.parentElement.children[0].textContent.trim();
+        local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+        createView();
+    }
     let active = true;
     if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
         active = selectionAvailable(event.target, containerSign);
@@ -154,3 +168,6 @@ require('./lib/btn').reset();
 require('./lib/btn').clear();
 require('./lib/btn').copyToClipboard();
 require('./lib/btn').saveData();
+
+// TODO: arreglar la parte de eliminar de la firma
+// TODO: arreglar el de agregar y eliminar de feedback

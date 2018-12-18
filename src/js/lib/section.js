@@ -32,12 +32,7 @@ const getSign = (container = new HTMLElement, phrases) => {
 }
 
 const randomPhrase = (phrases = []) => {
-    let i = 0;
-
-    while (i === 0) {
-        i = Math.floor(Math.random() * phrases.length) > 0 ? Math.floor(Math.random() * phrases.length) : 0;
-    }
-    return phrases[i];
+    return phrases.length > 0 ? phrases[Math.floor(Math.random() * phrases.length)] : '';
 }
 
 /**

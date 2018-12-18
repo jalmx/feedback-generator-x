@@ -126,3 +126,4 @@ gulp.task('default', ['views', 'sass', 'js'], () => {
 gulp.task('build', ['sass', 'views', 'js', 'cache', 'robots', 'humans', 'sitemap']);
 
 // TODO: minificar html y js
+// TODO: sitemap rel en html

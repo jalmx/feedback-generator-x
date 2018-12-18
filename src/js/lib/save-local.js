@@ -28,8 +28,18 @@ const insertValues = data => {
 }
 const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
 
-const remove = () => {
+const remove = (namePhrase, element) => {
 
+    if (namePhrase != 'feedback') {
+        let data = loadDataSaved();
+        const index = data.phrases[namePhrase].indexOf(element)
+        if (index >= 0) {
+            data.phrases[namePhrase].splice(index, 1);
+            insertValues(data);
+        }
+    } else {
+        //TODO: en caso que sea feedback
+    }
 }
 const reset = () => {
     window.localStorage.clear();

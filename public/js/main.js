@@ -33,16 +33,14 @@ var formPhrase = document.getElementById('form-phrase');
 var formGoodbye = document.getElementById('form-goodbye');
 var formResource = document.getElementById('form-resource');
 var formSign = document.getElementById('form-sign');
-var saved = local.createAccount();
-var phrases = saved.phrases;
-
-var feeds = require('./lib/build-feedback').createAllFeeds;
+local.createAccount();
 
 var createView = function createView() {
   var createSection = require('./lib/build-section').createSection;
 
   var createFormSign = require('./lib/build-section').createFormSign;
 
+  var phrases = local.loadDataSaved().phrases;
   createSection({
     container: formGreeting,
     name: 'greeting',
@@ -76,11 +74,15 @@ var createView = function createView() {
 };
 
 createView();
+var phrases = local.loadDataSaved().phrases;
 var messageGreeting = selectionContainer(containerGreeting, phrases.greeting);
 var messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 var messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
 var messageSign = getSign(containerSign, phrases.sign);
-containerFeedback.innerHTML += feeds(saved.feedbacks);
+
+var feeds = require('./lib/build-feedback').createAllFeeds;
+
+containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks);
 var bodyMessage = {
   name: name.value,
   greeting: messageGreeting,
@@ -106,10 +108,9 @@ containerGreeting.addEventListener('click', function (event) {
   }
 
   if (event.target.localName === 'span') {
-    //TODO: para eliminar el mensaje
-    var elements = Array.from(containerGreeting.children);
-    elements[elements.length - 1];
-    console.dir(elements[elements.length - 1]);
+    var element = event.target.parentElement.children[0].textContent.trim();
+    local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+    createView();
   }
 
   var active = true;
@@ -118,14 +119,19 @@ containerGreeting.addEventListener('click', function (event) {
     active = selectionAvailable(event.target, containerGreeting);
   }
 
-  console.log('entre');
-  bodyMessage.greeting = checkboxChecked(containerGreeting) && active ? selectionContainer(containerGreeting, local.loadDataSaved().phrases.greeting) : "";
+  bodyMessage.greeting = checkboxChecked(containerGreeting) && active ? selectionContainer(containerGreeting, local.loadDataSaved().phrases.greeting) : '';
   addMessage(containerMessage, bodyMessage);
 });
 containerPhrase.addEventListener('click', function (event) {
   if (event.target.id.endsWith('add')) {
     event.preventDefault();
     add(formPhrase);
+  }
+
+  if (event.target.localName === 'span') {
+    var element = event.target.parentElement.children[0].textContent.trim();
+    local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+    createView();
   }
 
   var active = true;
@@ -143,6 +149,12 @@ containerGoodbye.addEventListener('click', function (event) {
     add(formGoodbye);
   }
 
+  if (event.target.localName === 'span') {
+    var element = event.target.parentElement.children[0].textContent.trim();
+    local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+    createView();
+  }
+
   var active = true;
 
   if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
@@ -153,6 +165,12 @@ containerGoodbye.addEventListener('click', function (event) {
   addMessage(containerMessage, bodyMessage);
 });
 containerSign.addEventListener('click', function (event) {
+  if (event.target.localName === 'span') {
+    var element = event.target.parentElement.children[0].textContent.trim();
+    local.remove(event.target.parentElement.parentElement.id.toString().replace('form-', '').trim(), element);
+    createView();
+  }
+
   var active = true;
 
   if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
@@ -179,7 +197,8 @@ require('./lib/btn').clear();
 
 require('./lib/btn').copyToClipboard();
 
-require('./lib/btn').saveData();
+require('./lib/btn').saveData(); // TODO: arreglar la parte de eliminar de la firma
+// TODO: arreglar el de agregar y eliminar de feedback
 },{"./lib/add":3,"./lib/btn":4,"./lib/build-feedback":5,"./lib/build-message":6,"./lib/build-section":7,"./lib/readFeed":11,"./lib/save-local":12,"./lib/section":13}],2:[function(require,module,exports){
 module.exports = class Feed {
 
@@ -695,8 +714,18 @@ const insertValues = data => {
 }
 const loadDataSaved = () => JSON.parse(window.localStorage.getItem(key));
 
-const remove = () => {
+const remove = (namePhrase, element) => {
 
+    if (namePhrase != 'feedback') {
+        let data = loadDataSaved();
+        const index = data.phrases[namePhrase].indexOf(element)
+        if (index >= 0) {
+            data.phrases[namePhrase].splice(index, 1);
+            insertValues(data);
+        }
+    } else {
+        //TODO: en caso que sea feedback
+    }
 }
 const reset = () => {
     window.localStorage.clear();
@@ -744,12 +773,7 @@ const getSign = (container = new HTMLElement, phrases) => {
 }
 
 const randomPhrase = (phrases = []) => {
-    let i = 0;
-
-    while (i === 0) {
-        i = Math.floor(Math.random() * phrases.length) > 0 ? Math.floor(Math.random() * phrases.length) : 0;
-    }
-    return phrases[i];
+    return phrases.length > 0 ? phrases[Math.floor(Math.random() * phrases.length)] : '';
 }
 
 /**
