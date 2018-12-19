@@ -201,9 +201,10 @@ require('./lib/btn').clear();
 
 require('./lib/btn').copyToClipboard();
 
-require('./lib/btn').saveData(); // TODO: arreglar la parte de eliminar de la firma
-// TODO: arreglar el de agregar y eliminar de feedback
-},{"./lib/add":3,"./lib/btn":4,"./lib/build-feedback":5,"./lib/build-message":6,"./lib/build-section":7,"./lib/readFeed":11,"./lib/save-local":12,"./lib/section":13}],2:[function(require,module,exports){
+require('./lib/btn').saveData();
+
+require('./lib/add-feed')(); // TODO: arreglar el de agregar y eliminar de feedback
+},{"./lib/add":4,"./lib/add-feed":3,"./lib/btn":5,"./lib/build-feedback":6,"./lib/build-message":7,"./lib/build-section":8,"./lib/readFeed":12,"./lib/save-local":13,"./lib/section":14}],2:[function(require,module,exports){
 module.exports = class Feed {
 
     constructor(name = '', checked = false, data = {}) {
@@ -218,6 +219,67 @@ module.exports = class Feed {
 
 }
 },{}],3:[function(require,module,exports){
+
+
+const addFeed = () => {
+    const btnAdd = document.getElementById('btn-add-feed');
+    const container = document.getElementById('add-feed-container');
+
+    const eventsBtn = e => {
+        if (e.target.id === 'feed-cancel') {
+            clear()
+        } else if (e.target.id === 'feed-save') {
+            // TODO: inserta en local
+        } else if (e.target.id === 'add-new-comment') {
+            addOption()
+        }
+    }
+    const clear = () => {
+        btnAdd.style.display = 'inline-block'
+        container.style.display = "none"
+        container.innerHTML = "";
+    }
+
+    const addOption = () => {
+        // TODO: lee cuantos inputs hay y calcula el valor que le corresponde al input y vuelve a cargar todo
+    }
+
+    const buildOption = () => {
+        const component = /*html*/ `
+<div class="add-feed__input">
+    <label for="0eval">0%</label>
+    <input type="text" placeholder="0% de evaluación" id="0eval"/>
+</div>
+`
+        return component;
+    }
+
+    btnAdd.addEventListener('click', e => {
+        e.preventDefault();
+
+        container.addEventListener('click', eventsBtn);
+
+        btnAdd.style.display = 'none'
+        container.style.display = "block"
+
+        container.innerHTML +=/*html*/ `
+        <h3 class="add-feed__title">Agregar comentarios</h3>
+        <span class="add-new-comment" id="add-new-comment">+</span>
+        <div class="add-feed__input">
+          <label for="tag">Tag</label>
+          <input type="text" placeholder="Agregar titulo del comentario nuevo" id="tag"/>
+        </div>
+        <div class="add-feed__description">
+          ${buildOption()}
+          ${buildOption()}
+          <div class="btn-save"><span class="button" id="feed-cancel">Cancelar</span><span class="button" id="feed-save">Guardar</span></div>
+        </div>
+        `
+    });
+}
+
+module.exports = addFeed;
+},{}],4:[function(require,module,exports){
 const local = require('./save-local');
 const createSection = require('./build-section').createSection;
 const createFormSign = require('./build-section').createFormSign;
@@ -264,7 +326,7 @@ const add = (form, elementName) => {
 module.exports = {
     add
 }
-},{"./build-section":7,"./save-local":12}],4:[function(require,module,exports){
+},{"./build-section":8,"./save-local":13}],5:[function(require,module,exports){
 const reset = () => {
     const local = require('./save-local');
     document.getElementById('reset')
@@ -312,7 +374,7 @@ module.exports = {
     saveData,
     copyToClipboard
 }
-},{"./save-local":12}],5:[function(require,module,exports){
+},{"./save-local":13}],6:[function(require,module,exports){
 const createAllFeeds = (feedbacks) => {
     let feeds = "";
 
@@ -326,8 +388,9 @@ const createAllFeeds = (feedbacks) => {
 
         feeds += /*html*/ `
             <div class="option">
-            <label>
+            <label class="label-feed">
               <input type="checkbox" name="${toIdHTML(element.name)}" id="${toIdHTML(element.name)}"/> ${element.name}
+              <span class="erase">X</span>
             </label>
             <div class="slider">
             <input type="range" 
@@ -358,7 +421,7 @@ const setRange = (value) => {
 module.exports = {
     createAllFeeds
 }
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 
 const buildMessage = (message = {}) => {
 
@@ -408,7 +471,7 @@ module.exports = {
     buildMessage,
     addMessage
 }
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 const createSection = (values) => {
 
     const container = values.container;
@@ -463,7 +526,7 @@ const createOption = (name, type, data, nameForm) => {
 </div>
         ` :
 /*html*/ `
-<div class="option new-data active">
+<div class="option ">
     <input type="${type}" id="${nameForm}-${name}" checked/>
     <label for="${nameForm}-${name}">${name}</label>
     <label for="${nameForm}-${name}" data-sign="${name}" data-option="true">${data}</label>
@@ -514,7 +577,7 @@ const toIdHTML = (text) => text.split(" ").join("-")
     .split("ú").join("")
 
 module.exports = { createSection, createFormSign };
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 let Feed = require('./Feed')
 
 const identify = new Feed('identifica el problema', false, {
@@ -632,9 +695,9 @@ module.exports = [
     nomenclature,
     format
 ];
-},{"./Feed":2}],9:[function(require,module,exports){
+},{"./Feed":2}],10:[function(require,module,exports){
 module.exports = 'EF0D391237';
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 const greeting = ['Hola', 'Estimado', 'Buen día'];
 const greetingTime = ['Buenos días', 'Buenas tardes', 'Buenas noches'];
 // TODO: agregar que verifuqe la hora y me lanze la que deba ir de acuerdo al horario
@@ -670,7 +733,7 @@ module.exports = {
     resource,
     sign
 }
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 const arrayFeeds = require('./feedback')
 const selectionAvailable = require('./section').selectionAvailable;
 
@@ -699,7 +762,7 @@ module.exports = function (event, containerFeedback) {
     })
     return {feedbackOk, feedbackOpportunity}
 }
-},{"./feedback":8,"./section":13}],12:[function(require,module,exports){
+},{"./feedback":9,"./section":14}],13:[function(require,module,exports){
 const key = require('./id')
 
 const createAccount = () => {
@@ -757,7 +820,7 @@ module.exports = {
     reset,
     remove
 }
-},{"./feedback":8,"./id":9,"./phrases":10}],13:[function(require,module,exports){
+},{"./feedback":9,"./id":10,"./phrases":11}],14:[function(require,module,exports){
 const getSelectRadio = (container = new HTMLElement, phrases = []) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
 

@@ -11,8 +11,9 @@ const createAllFeeds = (feedbacks) => {
 
         feeds += /*html*/ `
             <div class="option">
-            <label>
+            <label class="label-feed">
               <input type="checkbox" name="${toIdHTML(element.name)}" id="${toIdHTML(element.name)}"/> ${element.name}
+              <span class="erase">X</span>
             </label>
             <div class="slider">
             <input type="range" 

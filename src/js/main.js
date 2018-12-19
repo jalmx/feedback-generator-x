@@ -175,6 +175,6 @@ require('./lib/btn').reset();
 require('./lib/btn').clear();
 require('./lib/btn').copyToClipboard();
 require('./lib/btn').saveData();
+require('./lib/add-feed')();
 
-// TODO: arreglar la parte de eliminar de la firma
 // TODO: arreglar el de agregar y eliminar de feedback

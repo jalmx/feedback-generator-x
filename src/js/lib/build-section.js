@@ -52,7 +52,7 @@ const createOption = (name, type, data, nameForm) => {
 </div>
         ` :
 /*html*/ `
-<div class="option new-data active">
+<div class="option ">
     <input type="${type}" id="${nameForm}-${name}" checked/>
     <label for="${nameForm}-${name}">${name}</label>
     <label for="${nameForm}-${name}" data-sign="${name}" data-option="true">${data}</label>
