@@ -1,6 +1,7 @@
 const local = require('./save-local');
 const createSection = require('./build-section').createSection;
 const createFormSign = require('./build-section').createFormSign;
+const isEmptyError = require('./lib').isEmptyError;
 
 const add = (form, elementName) => {
     let savedData = local.loadDataSaved();
@@ -13,8 +14,8 @@ const add = (form, elementName) => {
             document.getElementById(elementName + '-new');
         const newMessage = inputNewMessage.value;
 
-        if (newMessage.trim() === '') {
-            alert('El campo no puede estar vacío!')
+        if (isEmptyError(inputNewMessage)) {
+            alert('El campo no puede estar vacío!');
             return;
         }
 

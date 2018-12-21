@@ -25,7 +25,7 @@ var containerPhrase = document.getElementById('container-phrase');
 var containerMessage = document.getElementById('textarea-message');
 var containerGoodbye = document.getElementById('container-goodbye');
 var containerSign = document.getElementById('container-sign');
-var containerFeedback = document.getElementById('container-feedback'); // TODO: crear el codigo para los recursos
+var containerFeedback = document.getElementById('container-feeds'); // TODO: crear el codigo para los recursos
 
 var containerResources = document.getElementById('container-resources');
 var formGreeting = document.getElementById('form-greeting');
@@ -80,7 +80,7 @@ var messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 var messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
 var messageSign = getSign(containerSign, phrases.sign);
 
-var feeds = require('./lib/build-feedback').createAllFeeds;
+var feeds = require('./lib/build-feedback');
 
 containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks);
 var bodyMessage = {
@@ -185,13 +185,9 @@ containerSign.addEventListener('click', function (event) {
   addMessage(containerMessage, bodyMessage);
 });
 containerFeedback.addEventListener('click', function (event) {
-  if (event.target.id.endsWith('add')) {
-    event.preventDefault();
-    add(containerPhrase);
-  }
-
-  bodyMessage.feedbackOk = readFeed(event, containerFeedback).feedbackOk;
-  bodyMessage.feedbackOpportunity = readFeed(event, containerFeedback).feedbackOpportunity;
+  var read = readFeed(event, containerFeedback);
+  bodyMessage.feedbackOk = read.feedbackOk;
+  bodyMessage.feedbackOpportunity = read.feedbackOpportunity;
   addMessage(containerMessage, bodyMessage);
 });
 
@@ -203,24 +199,19 @@ require('./lib/btn').copyToClipboard();
 
 require('./lib/btn').saveData();
 
-require('./lib/add-feed')(); // TODO: arreglar el de agregar y eliminar de feedback
-},{"./lib/add":4,"./lib/add-feed":3,"./lib/btn":5,"./lib/build-feedback":6,"./lib/build-message":7,"./lib/build-section":8,"./lib/readFeed":12,"./lib/save-local":13,"./lib/section":14}],2:[function(require,module,exports){
+require('./lib/add-feed')(); // TODO: dejo de funcionar el que deshabilita todo, eliminar de feedback
+// TODO: eliminar de feedback
+// TODO: hacer que el boton de agregar igual se deshabilite, agregar estilos
+},{"./lib/add":4,"./lib/add-feed":3,"./lib/btn":5,"./lib/build-feedback":6,"./lib/build-message":7,"./lib/build-section":8,"./lib/readFeed":13,"./lib/save-local":14,"./lib/section":15}],2:[function(require,module,exports){
 module.exports = class Feed {
 
-    constructor(name = '', checked = false, data = {}) {
+    constructor(name = '', checked = false, data = { checked: checked, option: false, range: [], group: '' }) {
         this.name = name;
-        this.data = data || {
-            checked: checked,
-            option: false,
-            range: [],
-            group: ''
-        };
+        this.data = data;
     }
 
 }
 },{}],3:[function(require,module,exports){
-
-
 const addFeed = () => {
     const btnAdd = document.getElementById('btn-add-feed');
     const container = document.getElementById('add-feed-container');
@@ -229,9 +220,11 @@ const addFeed = () => {
         if (e.target.id === 'feed-cancel') {
             clear()
         } else if (e.target.id === 'feed-save') {
-            // TODO: inserta en local
+            saveNewFeed();
         } else if (e.target.id === 'add-new-comment') {
             addOption()
+        } else if (e.target.id === 'sub-new-comment') {
+            subOption()
         }
     }
     const clear = () => {
@@ -239,19 +232,46 @@ const addFeed = () => {
         container.style.display = "none"
         container.innerHTML = "";
     }
-
-    const addOption = () => {
-        // TODO: lee cuantos inputs hay y calcula el valor que le corresponde al input y vuelve a cargar todo
+    const countInput = () => {
+        return container.querySelectorAll('input').length;
     }
 
-    const buildOption = () => {
-        const component = /*html*/ `
-<div class="add-feed__input">
-    <label for="0eval">0%</label>
-    <input type="text" placeholder="0% de evaluación" id="0eval"/>
-</div>
-`
-        return component;
+    const saveNewFeed = () => {
+        const Feed = require('./Feed');
+        const local = require('./save-local');
+        const tag = document.getElementById('tag-feed');
+        const containerInputs = document.getElementById('add-feed__description');
+        const inputs = [...containerInputs.querySelectorAll('input[type="text')];
+        let feeds = [];
+
+        inputs.forEach(input => {
+            feeds.push(input.value)
+        })
+
+        const newFeed = new Feed(tag.value, false, {
+            group: 'new',
+            range: feeds
+        })
+
+        local.saveNewFeed(newFeed);
+        clear();
+        const containerFeedback = document.getElementById('container-feeds');
+        const buildFeeds = require('./build-feedback');
+        containerFeedback.innerHTML = '';
+        containerFeedback.innerHTML += buildFeeds(local.loadDataSaved().feedbacks);
+        document.getElementById('textarea-message').value = '';
+    }
+
+    const addOption = () => {
+        buildOption(`${countInput() - 1}`)
+    }
+    const subOption = () => {
+        const containerInputs = document.getElementById('add-feed__description');
+        if (containerInputs.childElementCount <= 2) {
+            alert('Debe contener cuando menos 2 comentarios')
+        } else {
+            containerInputs.removeChild(containerInputs.lastElementChild);
+        }
     }
 
     btnAdd.addEventListener('click', e => {
@@ -264,25 +284,49 @@ const addFeed = () => {
 
         container.innerHTML +=/*html*/ `
         <h3 class="add-feed__title">Agregar comentarios</h3>
-        <span class="add-new-comment" id="add-new-comment">+</span>
+        <div class="btn-group">
+        <span class="button btn-feed sub-feed" id="sub-new-comment">-</span>
+            <span class="button btn-feed" id="add-new-comment">+</span>
+        </div>
         <div class="add-feed__input">
           <label for="tag">Tag</label>
-          <input type="text" placeholder="Agregar titulo del comentario nuevo" id="tag"/>
+          <input type="text" placeholder="Ejemplo: Formato" id="tag-feed"/>
         </div>
-        <div class="add-feed__description">
-          ${buildOption()}
-          ${buildOption()}
-          <div class="btn-save"><span class="button" id="feed-cancel">Cancelar</span><span class="button" id="feed-save">Guardar</span></div>
+        <div class="add-feed__description" id="add-feed__description">
         </div>
+        <div class="btn-save"><span class="button" id="feed-cancel">Cancelar</span><span class="button" id="feed-save">Guardar</span></div>
         `
+        buildOption('0', 'No está en el formato solicitado el documento');
+        buildOption('1', 'Entregas el documento en el formato solicitado.');
     });
+
+    const buildOption = (value, placeholder = '') => {
+        const inputContainer = document.getElementById('add-feed__description');
+        let div = document.createElement('div');
+        div.classList.add("add-feed__input");
+
+        const label = document.createElement('label');
+        label.textContent = `${value}`;
+        label.setAttribute('for', `${value}eval`);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = `${value}eval`;
+        input.placeholder = placeholder === '' ? `${value} Nivel` : `Ejemplo: ${placeholder}`
+        input.id = `${value}eval`;
+        div.appendChild(label);
+        div.appendChild(input)
+
+        inputContainer.appendChild(div);
+    }
 }
 
 module.exports = addFeed;
-},{}],4:[function(require,module,exports){
+},{"./Feed":2,"./build-feedback":6,"./save-local":14}],4:[function(require,module,exports){
 const local = require('./save-local');
 const createSection = require('./build-section').createSection;
 const createFormSign = require('./build-section').createFormSign;
+const isEmptyError = require('./lib').isEmptyError;
 
 const add = (form, elementName) => {
     let savedData = local.loadDataSaved();
@@ -295,8 +339,8 @@ const add = (form, elementName) => {
             document.getElementById(elementName + '-new');
         const newMessage = inputNewMessage.value;
 
-        if (newMessage.trim() === '') {
-            alert('El campo no puede estar vacío!')
+        if (isEmptyError(inputNewMessage)) {
+            alert('El campo no puede estar vacío!');
             return;
         }
 
@@ -326,7 +370,7 @@ const add = (form, elementName) => {
 module.exports = {
     add
 }
-},{"./build-section":8,"./save-local":13}],5:[function(require,module,exports){
+},{"./build-section":8,"./lib":11,"./save-local":14}],5:[function(require,module,exports){
 const reset = () => {
     const local = require('./save-local');
     document.getElementById('reset')
@@ -374,7 +418,7 @@ module.exports = {
     saveData,
     copyToClipboard
 }
-},{"./save-local":13}],6:[function(require,module,exports){
+},{"./save-local":14}],6:[function(require,module,exports){
 const createAllFeeds = (feedbacks) => {
     let feeds = "";
 
@@ -418,9 +462,7 @@ const toIdHTML = (text) => {
 const setRange = (value) => {
     return (100 / (value - 1)).toFixed(2)
 }
-module.exports = {
-    createAllFeeds
-}
+module.exports = createAllFeeds
 },{}],7:[function(require,module,exports){
 
 const buildMessage = (message = {}) => {
@@ -659,7 +701,7 @@ const critico = new Feed('crítico', false, {
 const reflex = new Feed('reflexiona', false, {
     group: 'thinking',
     range: [
-        'Reflexionar con la forma adecuada de aplicacr métodos algebraicos.',
+        'Reflexiona con la forma adecuada de aplicar métodos algebraicos.',
         'Reflexionas de forma regular y utilizas de manera incorrecta métodos algebraicos para resolver el problema planteado.',
         'Reflexionas y utilizas métodos algebraicos para resolver el problema planteado.'
     ]
@@ -698,6 +740,20 @@ module.exports = [
 },{"./Feed":2}],10:[function(require,module,exports){
 module.exports = 'EF0D391237';
 },{}],11:[function(require,module,exports){
+const isEmptyError = (input) => {
+
+    if (input.value.trim() === '') {
+        input.classList.add('error-input')
+        return true;
+    }
+    else {
+        input.classList.remove('error-input');
+        return false
+    }
+}
+
+module.exports = { isEmptyError }
+},{}],12:[function(require,module,exports){
 const greeting = ['Hola', 'Estimado', 'Buen día'];
 const greetingTime = ['Buenos días', 'Buenas tardes', 'Buenas noches'];
 // TODO: agregar que verifuqe la hora y me lanze la que deba ir de acuerdo al horario
@@ -733,12 +789,13 @@ module.exports = {
     resource,
     sign
 }
-},{}],12:[function(require,module,exports){
-const arrayFeeds = require('./feedback')
+},{}],13:[function(require,module,exports){
+
 const selectionAvailable = require('./section').selectionAvailable;
 
-module.exports = function (event, containerFeedback) {
 
+module.exports = (event, containerFeedback) => {
+    let local = require('./save-local');
     if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
         selectionAvailable(event.target, containerFeedback);
     }
@@ -747,22 +804,24 @@ module.exports = function (event, containerFeedback) {
     let feedbackOpportunity = [];
     let range = event.target;
 
-    let ranges = [...range.parentNode.parentNode.parentNode.querySelectorAll('input[type="range"]')];
+    const ranges = [...range.parentNode.parentNode.parentNode.querySelectorAll('input[type="range"]')];
+    let arrayFeeds = local.loadDataSaved().feedbacks;
 
     ranges.forEach((range, index) => {
         if (range.parentNode.previousElementSibling.children[0].checked) {
+
             let level = range.value / range.step;
 
-            if(level === 0){
+            if (level === 0) {
                 feedbackOpportunity.push(arrayFeeds[index].data.range[level])
-            }else{
+            } else {
                 feedbackOk.push(arrayFeeds[index].data.range[level])
             }
         }
     })
-    return {feedbackOk, feedbackOpportunity}
-}
-},{"./feedback":9,"./section":14}],13:[function(require,module,exports){
+    return { feedbackOk, feedbackOpportunity }
+} 
+},{"./save-local":14,"./section":15}],14:[function(require,module,exports){
 const key = require('./id')
 
 const createAccount = () => {
@@ -809,6 +868,11 @@ const remove = (namePhrase, element) => {
     }
     insertValues(data);
 }
+const saveNewFeed = (feed) => {
+    let data = loadDataSaved();
+    data.feedbacks.push(feed);
+    insertValues(data);
+}
 const reset = () => {
     window.localStorage.clear();
     insertValuesDefault()
@@ -818,9 +882,10 @@ module.exports = {
     loadDataSaved,
     insertValues,
     reset,
-    remove
+    remove,
+    saveNewFeed
 }
-},{"./feedback":9,"./id":10,"./phrases":11}],14:[function(require,module,exports){
+},{"./feedback":9,"./id":10,"./phrases":12}],15:[function(require,module,exports){
 const getSelectRadio = (container = new HTMLElement, phrases = []) => {
     const options = [...container.querySelectorAll('[type="radio"]')];
 

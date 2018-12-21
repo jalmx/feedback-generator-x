@@ -41,6 +41,4 @@ const toIdHTML = (text) => {
 const setRange = (value) => {
     return (100 / (value - 1)).toFixed(2)
 }
-module.exports = {
-    createAllFeeds
-}
+module.exports = createAllFeeds

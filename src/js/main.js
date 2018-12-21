@@ -14,7 +14,7 @@ const containerPhrase = document.getElementById('container-phrase');
 const containerMessage = document.getElementById('textarea-message');
 const containerGoodbye = document.getElementById('container-goodbye');
 const containerSign = document.getElementById('container-sign');
-const containerFeedback = document.getElementById('container-feedback');
+const containerFeedback = document.getElementById('container-feeds');
 // TODO: crear el codigo para los recursos
 const containerResources = document.getElementById('container-resources');
 const formGreeting = document.getElementById('form-greeting');
@@ -45,8 +45,8 @@ let messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 let messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
 let messageSign = getSign(containerSign, phrases.sign)
 
-const feeds = require('./lib/build-feedback').createAllFeeds
-containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks)
+const feeds = require('./lib/build-feedback');
+containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks);
 let bodyMessage = {
     name: name.value,
     greeting: messageGreeting,
@@ -160,14 +160,9 @@ containerSign.addEventListener('click', (event) => {
 });
 
 containerFeedback.addEventListener('click', (event) => {
-
-    if ((event.target.id).endsWith('add')) {
-        event.preventDefault()
-        add(containerPhrase)
-    }
-
-    bodyMessage.feedbackOk = readFeed(event, containerFeedback).feedbackOk;
-    bodyMessage.feedbackOpportunity = readFeed(event, containerFeedback).feedbackOpportunity;
+    const read = readFeed(event, containerFeedback);
+    bodyMessage.feedbackOk = read.feedbackOk;
+    bodyMessage.feedbackOpportunity = read.feedbackOpportunity;
     addMessage(containerMessage, bodyMessage);
 })
 
@@ -177,4 +172,6 @@ require('./lib/btn').copyToClipboard();
 require('./lib/btn').saveData();
 require('./lib/add-feed')();
 
-// TODO: arreglar el de agregar y eliminar de feedback
+// TODO: dejo de funcionar el que deshabilita todo, eliminar de feedback
+// TODO: eliminar de feedback
+// TODO: hacer que el boton de agregar igual se deshabilite, agregar estilos

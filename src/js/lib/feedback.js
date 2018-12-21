@@ -79,7 +79,7 @@ const critico = new Feed('crítico', false, {
 const reflex = new Feed('reflexiona', false, {
     group: 'thinking',
     range: [
-        'Reflexionar con la forma adecuada de aplicacr métodos algebraicos.',
+        'Reflexiona con la forma adecuada de aplicar métodos algebraicos.',
         'Reflexionas de forma regular y utilizas de manera incorrecta métodos algebraicos para resolver el problema planteado.',
         'Reflexionas y utilizas métodos algebraicos para resolver el problema planteado.'
     ]

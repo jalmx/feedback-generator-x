@@ -44,6 +44,11 @@ const remove = (namePhrase, element) => {
     }
     insertValues(data);
 }
+const saveNewFeed = (feed) => {
+    let data = loadDataSaved();
+    data.feedbacks.push(feed);
+    insertValues(data);
+}
 const reset = () => {
     window.localStorage.clear();
     insertValuesDefault()
@@ -53,5 +58,6 @@ module.exports = {
     loadDataSaved,
     insertValues,
     reset,
-    remove
+    remove,
+    saveNewFeed
 }

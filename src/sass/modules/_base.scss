@@ -32,5 +32,9 @@ img {
     width: 100%;
 }
 
+.error-input[type="text"] {
+    outline: 1px solid red;
+}
+
 $break-contact: 615px;
 $break-medium: 720px;
