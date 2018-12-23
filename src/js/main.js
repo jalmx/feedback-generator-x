@@ -34,10 +34,15 @@ const createView = () => {
     createSection({ container: formGoodbye, name: 'goodbye', phrases: phrases.goodbye, type: 'radio' });
     createSection({ container: formResource, name: 'resource', phrases: phrases.resource, type: 'checkbox' });
     createFormSign({ container: formSign, name: 'sign', 'phrases': phrases.sign, type: 'checkbox' });
+}
 
+const createFeedback = () => {
+    const feeds = require('./lib/build-feedback');
+    containerFeedback.innerHTML = '';
+    containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks);
 }
 createView();
-
+createFeedback();
 let phrases = local.loadDataSaved().phrases;
 
 let messageGreeting = selectionContainer(containerGreeting, phrases.greeting);
@@ -45,8 +50,7 @@ let messagePhrase = selectionContainer(containerPhrase, phrases.phrase);
 let messageGoodbye = selectionContainer(containerGoodbye, phrases.goodbye);
 let messageSign = getSign(containerSign, phrases.sign)
 
-const feeds = require('./lib/build-feedback');
-containerFeedback.innerHTML += feeds(local.loadDataSaved().feedbacks);
+
 let bodyMessage = {
     name: name.value,
     greeting: messageGreeting,
@@ -160,12 +164,23 @@ containerSign.addEventListener('click', (event) => {
 });
 
 containerFeedback.addEventListener('click', (event) => {
-    const read = readFeed(event, containerFeedback);
+
+    if (event.target.id.toString().endsWith('erase')) {
+        local.remove(
+            event.target.parentElement.parentElement.parentElement.parentElement.id.toString().replace('container-', '').trim(),
+            Array.from(containerFeedback.querySelectorAll('.erase')).indexOf(event.target));
+        createFeedback();
+    }
+
+})
+
+const containerMainFeedback = document.getElementById('container-feedback')
+containerMainFeedback.addEventListener('click', event => {
+    const read = readFeed(event, containerMainFeedback);
     bodyMessage.feedbackOk = read.feedbackOk;
     bodyMessage.feedbackOpportunity = read.feedbackOpportunity;
     addMessage(containerMessage, bodyMessage);
 })
-
 require('./lib/btn').reset();
 require('./lib/btn').clear();
 require('./lib/btn').copyToClipboard();

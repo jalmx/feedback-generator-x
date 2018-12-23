@@ -10,8 +10,7 @@ const humans = require('gulp-humans');
 const robots = require('gulp-robots');
 const browserify = require('gulp-browserify');
 const babel = require('gulp-babel');
-const uglify = require('gulp-uglify');
-const pump = require('pump');
+const minify = require('gulp-minify')
 
 const postCSSPluings = [
     cssnano({
@@ -32,6 +31,12 @@ gulp.task('js', () => {
             )
         ).on('error', (e) => { console.log('error en la compilacion de babel', e) })
         .pipe(browserify()).on('error', (e) => { console.log('error en la compilacion de browserify', e) })
+        .pipe(minify({
+            ext: {
+                src: '-min.js',
+                min: '.js'
+            }
+        }))
         .pipe(gulp.dest('./public/js'));
 });
 
@@ -40,7 +45,8 @@ gulp.task('views', function () {
     return gulp.src('./src/views/**.pug')
         .pipe(pug(
             {
-                pretty: true
+                pretty: true,
+                basedir: '/src/views'
             }
         )).on('error', (e) => {
             console.log('pug error', e);
@@ -61,7 +67,7 @@ gulp.task('sitemap', () => {
         read: false
     })
         .pipe(sitemap({
-            siteUrl: 'https://www.alejandro-leyva.com/feedback-generator-x/' // remplazar por tu dominio
+            siteUrl: 'https://www.alejandro-leyva.com/feedback-generator-x/'
         }))
         .pipe(gulp.dest('./public'))
 })
@@ -71,6 +77,7 @@ gulp.task('cache', () => {
         .pipe(cachebust({
             type: 'timestamp'
         }))
+        .pipe(minify())
         .pipe(gulp.dest('./public'))
 })
 
@@ -123,7 +130,7 @@ gulp.task('default', ['views', 'sass', 'js'], () => {
     gulp.watch('./src/sass/**/**.scss', ['sass'])
 })
 
-gulp.task('build', ['sass', 'views', 'js', 'cache', 'robots', 'humans', 'sitemap']);
+gulp.task('build', ['sass', 'views', 'js', 'robots', 'humans', 'sitemap', 'cache']);
 
 // TODO: minificar html y js
 // TODO: sitemap rel en html

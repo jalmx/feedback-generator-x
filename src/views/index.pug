@@ -2,8 +2,11 @@
 html(lang="mx")
   head
     include templates/_blocks/meta
+    include templates/_blocks/meta
+    include templates/_blocks/open
     include templates/_blocks/icon
     title Feedback Generator X | Alejandro Leyva
+    //- include templates/_blocks/ad
   body
     main.main
       h1.title-main Generador de Retroalimentación X
@@ -14,9 +17,9 @@ html(lang="mx")
           include templates/body/resources
           include templates/body/phrase
           include templates/body/goodbye
-          include templates/body/sign
+          include templates/body/sign 
         section.container-message
           include templates/body/message
           include templates/body/saved-message
-      include templates/footer
-    script(src="./js/main.js" async)
+    include templates/footer
+    script(src="./js/main.js" async="")

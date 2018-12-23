@@ -13,7 +13,7 @@ const createAllFeeds = (feedbacks) => {
             <div class="option">
             <label class="label-feed">
               <input type="checkbox" name="${toIdHTML(element.name)}" id="${toIdHTML(element.name)}"/> ${element.name}
-              <span class="erase">X</span>
+              <span class="erase" id="${toIdHTML(element.name)}-erase">X</span>
             </label>
             <div class="slider">
             <input type="range" 

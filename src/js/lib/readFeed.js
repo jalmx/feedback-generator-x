@@ -4,6 +4,7 @@ const selectionAvailable = require('./section').selectionAvailable;
 
 module.exports = (event, containerFeedback) => {
     let local = require('./save-local');
+
     if (event.target.dataset.input === 'checkbox' && event.target.type === 'checkbox') {
         selectionAvailable(event.target, containerFeedback);
     }

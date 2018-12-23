@@ -32,7 +32,8 @@ const remove = (namePhrase, element) => {
     let data = loadDataSaved();
 
     if (namePhrase === 'feedback') {
-        // TODO: para feedback
+        data.feedbacks.splice(element, 1)
+
     } else if (namePhrase === 'sign') {
         data.phrases.sign[element] = '';
     } else {

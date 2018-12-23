@@ -43,6 +43,8 @@ const selectionAvailable = (checkbox, container = new HTMLElement) => {
     const text = [...container.querySelectorAll('[type="text"]')];
     const checkboxChilds = [...container.querySelectorAll('[type="checkbox"]')];
     const ranges = [...container.querySelectorAll('[type="range"]')];
+    const btnAdd = [...container.querySelectorAll('[id*="-add"]')];
+    const btnErase = [...container.querySelectorAll('[id*="-erase"]')];
 
     options.forEach((i) => {
         i.disabled = !checkbox.checked;
@@ -58,6 +60,14 @@ const selectionAvailable = (checkbox, container = new HTMLElement) => {
         checkboxChilds[index].disabled = !checkbox.checked;
     }
 
+    btnAdd.forEach(btn => {
+        btn.classList.toggle('btn-inactive');
+    })
+
+    btnErase.forEach(btn => {
+        btn.classList.toggle('erase');
+        btn.classList.toggle('btn-inactive');
+    })
 
     return checkbox.checked;
 }

@@ -12,7 +12,7 @@ const identify = new Feed('identifica el problema', false, {
 const tecnology = new Feed('emplea la tecnología', false, {
     group: 'attitudinal',
     range: [
-        'Existen diversos softwares y aplicaciones las cuales puedes hacer uso, las cuales te permiter entregar un excelente trabajo; partiendo de ello, el módelo educativo nos marca que desarrollemos la competencia del uso y aplicación de las tecnologías de la información',
+        'Existen diversos softwares y aplicaciones las cuales puedes hacer uso, las cuales te permitirán entregar un excelente trabajo; partiendo de ello, el módelo educativo nos marca que desarrollemos la competencia del uso y aplicación de las tecnologías de la información',
         'Empleas la tecnología de la forma adecuada para elaborar un documento con la información solicitada.',
     ]
 })
@@ -40,7 +40,7 @@ const attitudinal = new Feed('atiende indicaciones', false, {
 const clean = new Feed('limpio y ordenado', false, {
     group: 'communicative',
     range: [
-        'La presentación es poco organizada y en algunos momentos se dificulta la comprensión; puedes tomarte un tiempo y desarrollarla con cuidado y ordenado.',
+        'Realizarr una presentación más organizada; en algunos momentos se dificulta la comprensión; puedes tomarte un tiempo y desarrollarla con cuidado y ordenado.',
         'Expones de manera clara tus ideas. La forma en la que presentas la información facilita la lectura y comprensión.'
     ]
 })
@@ -59,8 +59,7 @@ const orthography = new Feed('redacción y orotografía', false, {
 const information = new Feed('información correcta y pertinente', false, {
     group: 'communicative',
     range: [
-        'Realizar una investigación más a profundidad y analitica al respesto al tema.',
-        'Realizar una investigación más a profundidad ya que existen inconsistencias en algunas cuestiones.',
+        'Realizas una investigación más a profundidad ya que existen inconsistencias en algunas cuestiones.',
         'La información que presentas, así como los procedimientos, son pertinentes y corresponden a los elementos solicitados.'
     ]
 })
@@ -68,7 +67,7 @@ const information = new Feed('información correcta y pertinente', false, {
 const critico = new Feed('crítico', false, {
     group: 'thinking',
     range: [
-        'Realiza un análisis superficial que no le permite resolver correctamente la actividad.',
+        'Realizar un análisis de la información para identificar la forma en la que resolverá el planteamiento.',
         'Analizas de manera general la información para identificar la forma en la que resolverá el planteamiento.',
         'Analizas la información para identificar la forma en la que resolverá el planteamiento.',
         'Analizas de manera general la información, para identificar la forma en la que resolverá el planteamiento.',
@@ -79,7 +78,7 @@ const critico = new Feed('crítico', false, {
 const reflex = new Feed('reflexiona', false, {
     group: 'thinking',
     range: [
-        'Reflexiona con la forma adecuada de aplicar métodos algebraicos.',
+        'Reflexionar la forma adecuada de aplicar métodos algebraicos.',
         'Reflexionas de forma regular y utilizas de manera incorrecta métodos algebraicos para resolver el problema planteado.',
         'Reflexionas y utilizas métodos algebraicos para resolver el problema planteado.'
     ]
@@ -96,7 +95,7 @@ const nomenclature = new Feed('nomenclatura correcta', false, {
 const format = new Feed('formato', false, {
     group: 'attitudinal',
     range: [
-        'No está en el formato solicitado el documento',
+        'Realizar el documento en el formato solicitado.',
         'Entregas el documento en el formato solicitado.'
     ]
 })
