@@ -10,7 +10,7 @@ const humans = require('gulp-humans');
 const robots = require('gulp-robots');
 const browserify = require('gulp-browserify');
 const babel = require('gulp-babel');
-const minify = require('gulp-minify')
+const minify = require('gulp-minify');
 
 const postCSSPluings = [
     cssnano({
@@ -40,7 +40,6 @@ gulp.task('js', () => {
         .pipe(gulp.dest('./public/js'));
 });
 
-
 gulp.task('views', function () {
     return gulp.src('./src/views/**.pug')
         .pipe(pug(
@@ -51,7 +50,7 @@ gulp.task('views', function () {
         )).on('error', (e) => {
             console.log('pug error', e);
         })
-        .pipe(gulp.dest('./public/'))
+        .pipe(gulp.dest('./public/'));
 });
 
 gulp.task('sass', function () {
@@ -69,6 +68,7 @@ gulp.task('sitemap', () => {
         .pipe(sitemap({
             siteUrl: 'https://www.alejandro-leyva.com/feedback-generator-x/'
         }))
+        .pipe(minify())
         .pipe(gulp.dest('./public'))
 })
 
@@ -131,6 +131,3 @@ gulp.task('default', ['views', 'sass', 'js'], () => {
 })
 
 gulp.task('build', ['sass', 'views', 'js', 'robots', 'humans', 'sitemap', 'cache']);
-
-// TODO: minificar html y js
-// TODO: sitemap rel en html
