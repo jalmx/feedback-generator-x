@@ -769,7 +769,7 @@ const greetingTime = ['Buenos días', 'Buenas tardes', 'Buenas noches'];
 
 
 const phrase = [
-    'Haz realizado un excelente trabajo, continua de esta manera.',
+    'Has realizado un excelente trabajo, continua de esta manera.',
     "Se percibe tu motivación y en ello tu esfuerzo, seguimos trabajando de esta manera."
 ];
 
