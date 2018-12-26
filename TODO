@@ -7,4 +7,6 @@ Todo:
   - cuando se vacia el feedback, que no ejecute la funcion
   - si se desactiva el checkbox del feedback, debe entrar a cancelar y quitar la ventana
   - al momento de agregar, si el campo esta vacío no lo agregre
+  - cuando doy entern en los inputs, que no recargue
   - hay un error mas, debo encontrarlo (Uncaught TypeError: Cannot read property 'parentNode' of null at a.exports (main.js:1) at HTMLElement.<anonymous> (main.js:1))
+  - ponerle un color al slider si esta seleccionado, y el valor que tenga, 
