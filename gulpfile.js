@@ -11,6 +11,7 @@ const robots = require('gulp-robots');
 const browserify = require('gulp-browserify');
 const babel = require('gulp-babel');
 const minify = require('gulp-minify');
+const htmlmin = require('gulp-htmlmin');
 
 const postCSSPluings = [
     cssnano({
@@ -44,7 +45,6 @@ gulp.task('views', function () {
     return gulp.src('./src/views/**.pug')
         .pipe(pug(
             {
-                pretty: true,
                 basedir: '/src/views'
             }
         )).on('error', (e) => {
@@ -68,7 +68,7 @@ gulp.task('sitemap', () => {
         .pipe(sitemap({
             siteUrl: 'https://www.alejandro-leyva.com/feedback-generator-x/'
         }))
-        .pipe(minify())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(gulp.dest('./public'))
 })
 
@@ -77,7 +77,7 @@ gulp.task('cache', () => {
         .pipe(cachebust({
             type: 'timestamp'
         }))
-        .pipe(minify())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(gulp.dest('./public'))
 })
 
@@ -130,4 +130,4 @@ gulp.task('default', ['views', 'sass', 'js'], () => {
     gulp.watch('./src/sass/**/**.scss', ['sass'])
 })
 
-gulp.task('build', ['sass', 'views', 'js', 'robots', 'humans', 'sitemap', 'cache']);
+gulp.task('build', ['views', 'js', 'robots', 'humans', 'sitemap', 'cache', 'sass']);
