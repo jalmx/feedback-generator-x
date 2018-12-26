@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="mx">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="description" content="App auxiliar de generación de retroalimentación de actividades y tareas, inspirado en la rubrica de Prepa línea SEP."/>
+    <meta name="robots" content="index, follow"/>
+    <meta name="author" content="Alejandro Leyva"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <meta property="og:type" content="product"/>
+    <meta property="og:title" content="Feedback Generator X"/>
+    <meta property="og:url" content="https://www.alejandro-leyva.com/feedback-generator-x"/>
+    <meta property="og:image" content="https://www.alejandro-leyva.com/assets/imgs/perfil.jpg"/>
+    <meta property="product:price:amount" content="0.00"/>
+    <meta property="product:price:currency" content="USD"/>
+    <meta name="twitter:card" content="app"/>
+    <meta name="twitter:site" content="@xizuth_tech"/>
+    <meta name="twitter:description" content="App auxiliar de generación de retroalimentación de actividades y tareas, inspirado en la rubrica de Prepa línea SEP."/>
+    <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png"/>
+    <link rel="manifest" href="icon/site.webmanifest"/>
+    <link rel="mask-icon" href="icon/safari-pinned-tab.svg" color="#878787"/>
+    <meta name="msapplication-TileColor" content="#333"/>
+    <meta name="theme-color" content="#333"/>
+    <title>Feedback Generator X | Alejandro Leyva</title>
+  </head>
+  <body>
+    <main class="main">
+      <h1 class="title-main">Generador de Retroalimentación X</h1>
+      <div class="container">
+        <section class="container-information">
+          <section class="container-greeting" id="container-greeting">
+            <h2 class="title-container">Saludo</h2>
+            <div class="option name-to">
+              <label for="name-user">Nombre 
+                <input type="text" id="name-user"/>
+              </label>
+            </div>
+            <div class="option active">
+              <label data-input="checkbox">
+                <input type="checkbox" name="greeting" id="greeting" checked="checked" data-input="checkbox"/> Saludo
+              </label>
+            </div>
+            <form id="form-greeting"></form>
+          </section>
+          <section class="container-feedback" id="container-feedback">
+            <h2 class="title-container">Retroalimentación</h2>
+            <div class="option active">
+              <label data-input="checkbox"> 
+                <input type="checkbox" name="feedback" id="feedback" data-input="checkbox" checked="checked"/> Retroalimentación 
+              </label>
+            </div>
+            <div class="option"><a class="button" href="#" id="btn-add-feed">Agregar retroalimentación nueva</a></div>
+            <div class="add-feed" id="add-feed-container"></div>
+            <div class="container-feeds" id="container-feeds"></div>
+          </section>
+          <section class="container-resources" id="container-resources" style="display:none">
+            <h2 class="title-container">Recursos</h2>
+            <div class="option active">
+              <label data-input="checkbox"> 
+                <input type="checkbox" id="goodbye" data-input="checkbox" checked="checked"/> Recursos
+              </label>
+            </div>
+            <form id="form-resource"></form>
+          </section>
+          <section class="container-phrase" id="container-phrase">
+            <h2 class="title-container">Frase extra</h2>
+            <div class="option active">
+              <label data-input="checkbox">
+                <input type="checkbox" name="phrase" id="phrase" data-input="checkbox" checked="checked"/> Frase extra
+              </label>
+            </div>
+            <form id="form-phrase"></form>
+          </section>
+          <section class="container-goodbye" id="container-goodbye">
+            <h2 class="title-container">Despedida</h2>
+            <div class="option active">
+              <label data-input="checkbox"> 
+                <input type="checkbox" id="goodbye" data-input="checkbox" checked="checked"/> Despedida
+              </label>
+            </div>
+            <form id="form-goodbye"></form>
+          </section>
+          <section class="container-signing" id="container-sign">
+            <h2 class="title-container">Firma</h2>
+            <form class="option active" id="container-sign">
+              <label data-input="checkbox">
+                <input type="checkbox" name="sign" id="sign" checked="checked" data-input="checkbox"/> Firma
+              </label>
+            </form>
+            <div id="form-sign"></div>
+          </section>
+        </section>
+        <section class="container-message">
+          <section id="container-message">
+            <div class="message">
+              <h2 class="title-container">Mensaje final</h2>
+              <textarea name="message" cols="30" rows="20" placeholder="Mensaje de retroalimentación" id="textarea-message"></textarea>
+              <div class="container-btn"><a class="button" href="#" id="copy">copiar a la papelera</a><a class="button" href="#" id="save">Guardar temporalmente</a><a class="button" href="#" id="clear">Limpiar campos</a><a class="button" href="#" id="reset">Reset</a></div>
+            </div>
+          </section>
+          <aside class="message-saved">
+            <h2 class="message-saved" id="message-saved"></h2>
+          </aside>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      <header class="footer__header">
+        <div class="sitemap">
+          <ul class="sitemap__list">
+            <li class="sitemap__item"><a class="sitemap__link" href="https://xizuth.com" target="_blank">Xizuth</a></li>
+            <li class="sitemap__item"><a class="sitemap__link" href="https://www.alejandro-leyva.com" target="_blank">Alejandro Leyva</a></li>
+            <li class="sitemap__item"><a class="sitemap__link" href="https://medium.com/@xizuth" target="_blank">Blog</a></li>
+            <li class="sitemap__item"><a class="sitemap__link" href="https://www.alejandro-leyva.com" target="_blank">Capacitación</a></li>
+            <li class="sitemap__item"><a class="sitemap__link" href="https://www.alejandro-leyva.com/about.html" target="_blank">Sobre mí</a></li>
+            <li class="sitemap__item"><a class="sitemap__link" href="https://www.alejandro-leyva.com/#contact" target="_blank">Contacto</a></li>
+          </ul>
+          <p class="sitemap__contact"><a class="site__email" href="mailto:xizuth@gmail.com">xizuth@gmail.com</a><br/><br/><a class="site__email" href="mailto:hola@alejandro-leyva.com">hola@alejandro-leyva.com</a></p>
+        </div>
+        <div class="logo"><a href="https://xizuth.com/"><img class="logo__img" src="assets/img/logo_X.svg" alt="logo xizuth blanco white"/></a></div>
+        <div class="social-media">
+          <h3 class="social-media__title">Redes sociales</h3>
+          <ul class="social-media__list">
+            <li class="social-media__item"><a class="icon-yt" href="https://www.youtube.com/channel/UCrsLIYPabgAyB4yoaKuGCPA" target="_blank"></a></li>
+            <li class="social-media__item"><a class="icon-play" href="https://play.google.com/store/apps/dev?id=7182139636058696036&amp;hl=en" target="_blank"></a></li>
+            <li class="social-media__item"><a class="icon-fb" href="https://www.facebook.com/xizuthTech/" target="_blank"></a></li>
+            <li class="social-media__item"><a class="icon-tw" href=" https://twitter.com/xizuth_tech" target="_blank"></a></li>
+            <li class="social-media__item"><a class="icon-medium" href=" https://medium.com/@xizuth" target="_blank">Medium</a></li>
+          </ul>
+        </div>
+      </header>
+      <div class="footer__information">
+        <ul class="information__list">
+          <li class="information__item"><a class="information__link" href="sitemap.xml" target="_blank">Sitemap</a></li>
+          <li class="information__item"><a class="information__link" href="https://xizuth.com/terms_and_conditions.html" target="_blank">Terminos y Condiciones</a></li>
+          <li class="information__item"><a class="information__link" href="https://xizuth.com/privacy_policy.html" target="_blank">Política de privacidad</a></li>
+        </ul>
+      </div>
+      <footer class="footer__mark">
+        <div itemscope="" itemtype="http://schema.org/SoftwareApplication"><span itemprop="name">Feedback generator - </span><span itemprop="applicationCategory">Education - Requires </span><span itemprop="operatingSystem">Web app (Chrome)  </span><span itemprop="aggregateRating" itemscope="" itemtype="http://schema.org/AggregateRating">Rating  - <span itemprop="ratingValue">5 (</span><span itemprop="ratingCount">100 ratings) </span></span><span itemprop="offers" itemscope="" itemtype="http://schema.org/Offer"><span itemprop="priceCurrency" content="USD">Price: 0 - </span><span itemprop="price">$0.00</span><br/></span></div>
+        <p><a href="https://xizuth.com/">Powered by Xizuth Inc </a><a href="https://www.alejandro-leyva.com/" id="mark">&copy Alejandro Leyva 2018 - </a><span>   - v1.0.0</span></p>
+        <script type="text/javascript">
+          const date = document.getElementById('mark');
+          date.innerHTML += new Date().getFullYear()
+        </script>
+      </footer>
+    </footer>
+    <script src="./js/main.js" async=""></script>
+  </body>
+</html>
