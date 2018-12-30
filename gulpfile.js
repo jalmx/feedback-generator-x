@@ -45,6 +45,7 @@ gulp.task('views', function () {
     return gulp.src('./src/views/**.pug')
         .pipe(pug(
             {
+                pretty: true,
                 basedir: '/src/views'
             }
         )).on('error', (e) => {

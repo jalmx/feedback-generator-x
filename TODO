@@ -2,6 +2,8 @@
 Todo:
   #html
   - agregar el icono de medium
+  #css
+  - darle un formato a cada retro guardada
 
   #js
   - cuando se vacia el feedback, que no ejecute la funcion
@@ -10,3 +12,5 @@ Todo:
   - cuando doy entern en los inputs, que no recargue
   - hay un error mas, debo encontrarlo (Uncaught TypeError: Cannot read property 'parentNode' of null at a.exports (main.js:1) at HTMLElement.<anonymous> (main.js:1))
   - ponerle un color al slider si esta seleccionado, y el valor que tenga, 
+  - en el mensaje final antes de guardar dar un trim()
+  - una ventana donde pueda ver todo lo almacenado
